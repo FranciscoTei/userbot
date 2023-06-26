@@ -3,7 +3,7 @@ import json
 import random
 from time import sleep
 import sqlite3
-from zoneinfo import ZoneInfo
+import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from botinit import brinabot, trata_erro
@@ -20,7 +20,7 @@ from info import *
 
 
 # Crie um objeto timezone
-tz = ZoneInfo('America/Sao_Paulo')
+tz = pytz.timezone('America/Sao_Paulo')
 
 print("iniciado")
 
