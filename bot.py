@@ -344,7 +344,6 @@ def ver_palavras(client, message):
 		for palavra in ps.palavras.keys():
 			palavras += f"<code>{palavra}</code> - "
 		#texto = f"Palavras: {' - '.join([<code>valor<\code> for valor in palavras_secretas.keys()])}"
-		palavra_secreta_finalizada(message.chat.id)
 	else:
 		palavras= "Nao há palavras."
 	client.send_message(message.chat.id, palavras)
