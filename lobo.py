@@ -101,7 +101,6 @@ def sorteando_lobo(chat = LOBINDIE):
         None
 	"""
 	sorteado = random.randint(0,99)
-	sorteado = 48
 	brinabot.send_message(chat, f"❗️<b>Número sorteado:</b> <code>{sorteado}</code>")
 	message = brinabot.send_message(chat, "<b>Procurando ganhadores.</b>")
 	for i in (2,3):
