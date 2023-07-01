@@ -228,17 +228,6 @@ def verifica_lobo_postado():
 
 verifica_lobo_postado()
 
-def search_date():
-	try:
-		mensagens = brinabot.get_chat_history(1945928748, limit = 15)
-		salvar = ""
-		for messages in mensagens:
-			if messages.text:
-				salvar+= messages.text
-		sql = f"INSERT INTO palavra_postada (tema, palavras) VALUES ('tema', '{salvar}')"
-		executa_query(sql, "insert")
-	except:
-		pass
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("postapalavra"))
 def posta_palavra(client, message):
@@ -357,10 +346,6 @@ def ver_palavras(client, message):
 	else:
 		palavras= "Nao há palavras."
 	client.send_message(message.chat.id, palavras)
-	try:
-		search_date()
-	except:
-		pass
 	
 # Defina o filtro para capturar o evento ChatMemberUpdated
 @brinabot.on_chat_member_updated(filters.chat(LOBINDIE))
