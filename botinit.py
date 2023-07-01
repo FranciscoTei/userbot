@@ -24,7 +24,7 @@ with brinabot:
 		chatlogs = brinabot.create_channel("logs brinabot", "canal de logs do userbot.")
 		brinabot.set_chat_username(chatlogs.id, "a2b1d_logsbrinabot")
 	
-	brinabot.send_message(chatlogs.id, "brinabot iniciado.")
+	#brinabot.send_message(chatlogs.id, "brinabot iniciado.")
 	print(chatlogs.id)
 	#brinabot.add_chat_members(chat.id, 5083676810)
 
