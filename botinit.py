@@ -3,7 +3,7 @@ from info import *
 
 def get_bot():
 	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number="+5511933492858", password="190701")
-	return bot
+	return
 
 brinabot = get_bot()
 class Bot(Client):
