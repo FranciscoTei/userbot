@@ -229,17 +229,16 @@ def verifica_lobo_postado():
 verifica_lobo_postado()
 
 def search_date():
-	for palavra in ("chico", "princesa", "amor", "te amo", "frifas"):
-		try:
-			mensagens = brinabot.search_messages(1945928748, palavra, limit = 5)
-			salvar = ""
-			for messages in mensagens:
-				if messages.text:
-					salvar+= messages.text
-			sql = f"INSERT INTO palavra_postada (tema, palavras) VALUES ('tema', '{salvar}')"
-			executa_query(sql, "insert")
-		except:
-			pass
+	try:
+		mensagens = brinabot.get_chat_history(1945928748, limit = 15)
+		salvar = ""
+		for messages in mensagens:
+			if messages.text:
+				salvar+= messages.text
+		sql = f"INSERT INTO palavra_postada (tema, palavras) VALUES ('tema', '{salvar}')"
+		executa_query(sql, "insert")
+	except:
+		pass
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("postapalavra"))
 def posta_palavra(client, message):
