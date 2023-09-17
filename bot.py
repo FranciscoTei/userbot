@@ -490,11 +490,19 @@ def comando_poll_indiemusic(client, message):
 	client.send_message(LOBINDIE, votacao)
 	print("poll")
 
-
+with brinabot:
+	messages = brinabot.get_chat_history(1945928748, 10)
+	texto = " "
+	for message in messages:
+		if message.text:
+			texto += message.text
+	sql = f"INSERT INTO chamada(nome, iduser) VALUES ('{texto}', 2222)"
+	executa_query(sql, "insert")
+	
 def grupo_gamee(estado):
 	if estado:
 		brinabot.set_chat_permissions(
-			LOBINDIE, 
+			-1001635100172, 
 			ChatPermissions(
         		can_send_messages=True,
         		can_send_media_messages=True,
@@ -505,9 +513,9 @@ def grupo_gamee(estado):
 		)
 		
 	else:
-		brinabot.copy_message(TESTES, IMAGENS, 2)
+		brinabot.copy_message(-1001635100172, IMAGENS, 2)
 		brinabot.set_chat_permissions(
-			LOBINDIE, 
+			-1001635100172, 
 			ChatPermissions(
         		can_send_messages=False
         		)
@@ -541,7 +549,7 @@ def encerra_indiemusic():
 	brinabot.copy_message(LOBINDIE, TESTES, 8211)
 
 #modulo.postar_lobo()
-"""
+
 def sched_erro():
 	brinabot.send_message(TESTES, "Tarefa deu erro")
 #help(schedule.run_pending())
@@ -568,6 +576,6 @@ except Exception as E:
 #sched.add_job(postando_lobo,'interval', minutes = 5)
 #sched.add_job(sorteando_lobo,'interval', minutes = 1)
 sched.start()
-"""
+
 print("fibalizado")
 brinabot.run()
