@@ -1,8 +1,6 @@
 from info import *
 from pyrogram import filters
-from botinit import get_bot
-
-brinabot = get_bot()
+from botinit import brinabot
 
 import sqlite3
 import demoji
