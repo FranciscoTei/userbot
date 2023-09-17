@@ -1,7 +1,8 @@
 import os
 
+
+os.environ["number"] = "+5584996412880" # "+5511950891476"
 """
-os.environ["number"] = "+5511950891476" #"+5584996412880" 
 os.environ["api_hash"] = "60914433b8f4fde57c6ba475f572f912"
 os.environ["api_id"] = "28357147"
 
