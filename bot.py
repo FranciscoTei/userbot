@@ -541,6 +541,7 @@ def encerra_indiemusic():
 	brinabot.copy_message(LOBINDIE, TESTES, 8211)
 
 #modulo.postar_lobo()
+"""
 def sched_erro():
 	brinabot.send_message(TESTES, "Tarefa deu erro")
 #help(schedule.run_pending())
@@ -567,5 +568,6 @@ except Exception as E:
 #sched.add_job(postando_lobo,'interval', minutes = 5)
 #sched.add_job(sorteando_lobo,'interval', minutes = 1)
 sched.start()
+"""
 print("fibalizado")
 brinabot.run()
