@@ -16,7 +16,7 @@ class Bot(Client):
 		)
 	def run(self):
 		super().run()
-
+"""
 with brinabot:
 	try:
 		chatlogs = brinabot.get_chat("@a2b1d_logsbrinabot")
@@ -27,7 +27,7 @@ with brinabot:
 	#brinabot.send_message(chatlogs.id, "brinabot iniciado.")
 	print(chatlogs.id)
 	#brinabot.add_chat_members(chat.id, 5083676810)
-
+"""
 import traceback
 def teste_exception(e):
 	with brinabot:
