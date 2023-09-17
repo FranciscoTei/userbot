@@ -17,19 +17,14 @@ from utils import *
 from palavrasecreta import *
 from lobo import postando_lobo, sorteando_lobo, confere_casa
 from info import *
+from agenda import *
 
 
 # Crie um objeto timezone
 tz = pytz.timezone('America/Sao_Paulo')
 
 print("iniciado")
-
-def funcaoaqui():
-	sql = "SELECT caseiro from lobo WHERE mingau = 'random'"
-	executa_query(sql, "select")
-	
-#funcaoaqui()
-
+        
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list(".!")))
 def salvar_text(client, message):
 	try:
@@ -72,28 +67,43 @@ def comando_reload(client, message):
 	for userid in membros:
 		try:
 			usuario  = client.get_chat_member(LOBINDIEFIXO, userid[0])
-			username = usuario.user.username if usuario.user.username is not None else " "
-			executa_query(f"UPDATE membros SET username = '{username}' WHERE iduser = '{userid[0]}'", "update")
-			time.sleep(1)
+			username = usuario.user.username if usuario.user.username is not None else "Null"
+			print(username)
+			executa_query(f"UPDATE membros SET username = '@{username}' WHERE iduser = '{userid[0]}'", "update")
+			time.sleep(0.2)
 		except Exception as E:
 			time.sleep(1)
 	client.send_message(message.chat.id, "Usernames atualizados.")
 	
-"""with brinabot:
-	brinabot.add_chat_members(erros, "@TenThings_Bot")
-	regras10things = brinabot.copy_message(erros, -1001217627450, 5329)
-	brinabot.pin_chat_message(erros, regras10things.id)
-	brinabot.copy_message(erros, -1001217627450, 5330) 
-	brinabot.send_message(erros, "/score@TenThings_Bot") """
+def tenthings():
+	brinabot.add_chat_members(LOBINDIE, "@TenThings_Bot")
+	regras10things = brinabot.copy_message(TESTES, -1001217627450, 7590)
+	brinabot.pin_chat_message(LOBINDIE, regras10things.id)
+	brinabot.copy_message(LOBINDIE, TESTES, 5330)
 
-@brinabot.on_message(filters.user(612900440) & (filters.regex("Daily Scores")))
-def pontua_tentings(client, message):
+	agora = datetime.datetime.now()
+	meio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0)
+
+	brinabot.send_message(LOBINDIE, "/score@TenThings_Bot", schedule_date = meio_dia)
+
+@brinabot.on_message((filters.regex("Daily Scores")))
+def pontua_tenthings(client, message):
+	infodata = DateTimeInfo()
+	if infodata.hora != "12":
+		return
 	pontuacao = message.text.split("\n")[1:]
-	placar = ""
+	placar = "placar\n\n"
+	pontos = 40
 	for pontuadores in pontuacao:
 		nomeplacar = pontuadores.split()[1]
-		placar += f"{nomeplacar} 50 "
-	#brinabot.send_message(erros, placar)
+		placar += f"{nomeplacar} {pontos} "
+		if pontos > 20:
+			pontos -= 10
+		elif pontos > 5:
+			pontos -= 5
+	brinabot.send_message(STAFF, placar)
+	brinabot.ban_chat_member(LOBINDIE, "@TenThings_Bot")
+	brinabot.unban_chat_member(LOBINDIE, "@TenThings_Bot")
 
 """
 @brinabot.on_message(filters.chat(staff) & (filters.regex("placar") | filters.regex("Placar")))
@@ -163,22 +173,38 @@ def comando_sql(client, message):
 		
 @brinabot.on_message(filters.me & filters.command("call"))
 def call_jogo(client, message):
-	mensagem = message.text.replace("/call ", "")
+	mensagem = message.text.replace("/call", "")
+	modulo.call = True
 	call(message.chat.id, mensagem = mensagem)
+
+@brinabot.on_message(filters.me & filters.command("soma"))
+def comando_soma(client, message):
+	placar = message.text.replace("/soma", "")
+	aplicadorpontos = soma(placar)
+	placar = placar + f"\n\naplicador {aplicadorpontos//10}"
+	client.edit_message_text(message.chat.id, message.id, placar)
 	
-@brinabot.on_message(filters.me & filters.command("cancelar"))
+
+@brinabot.on_message(filters.me & filters.command("encerrar"))
 def cancela_call(client, message):
-	call(client,message.chat.id, chamar = False)
-		
+	modulo.call = False
+
+
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("postalobo"))
 def posta_lobo(client, message):
-	postando_lobo(message.chat.id)
-	client.delete_messages(message.chat.id, message.id)
+	if message.text.replace("/postalobo", ""):
+		postando_lobo(LOBINDIEFIXO)
+	else:
+		postando_lobo(message.chat.id)
+		client.delete_messages(message.chat.id, message.id)
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sorteialobo"))
 def sorteia_lobo(client, message):
-	sorteando_lobo(message.chat.id)
-	client.delete_messages(message.chat.id, message.id)
+	if message.text.replace("/sorteialobo", ""):
+		sorteando_lobo(LOBINDIEFIXO)
+	else:
+		sorteando_lobo(message.chat.id)
+		client.delete_messages(message.chat.id, message.id)
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlite", prefixes=list(".!")))
 def comando_sqlite(client, message):
@@ -231,9 +257,18 @@ verifica_lobo_postado()
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("postapalavra"))
 def posta_palavra(client, message):
-	ps.palavras = postando_palavra_secreta(message.chat.id)
-	client.delete_messages(message.chat.id, message.id)
+	if message.text.replace("/postapalavra", ""):
+		postando_palavra_secreta(LOBINDIEFIXO)
+	else:
+		postando_palavra_secreta(message.chat.id)
+		client.delete_messages(message.chat.id, message.id)
 
+
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("validarpalavra"))
+def comando_validar_palavra(client, message):
+	chute = conferir_chute(message.reply_to_message.text, ps.palavras)
+	palavra_secreta(message.reply_to_message.from_user, chute, message.reply_to_message.id, message.chat.id)
+	
 @brinabot.on_message(filters.reply & filters.chat(LOBINDIE))
 def envia_lobo(client, message):
 	"""
@@ -242,7 +277,7 @@ def envia_lobo(client, message):
 	idmessagelobo, pontos= sqlite.executa("SELECT idmessage, pontos FROM lobo")
 	print(idmessagelobo)
 	
-	if message.reply_to_message.id == idmessagelobo:		
+	if message.reply_to_message.id == idmessagelobo or message.reply_to_message_id == idmessagelobo:
 		sql = f"SELECT * FROM lobo WHERE iduser = {message.from_user.id}"
 		membrosalvo = executa_query(sql, "select")
 		casa = confere_casa(message.text)
@@ -269,6 +304,21 @@ def envia_lobo(client, message):
 			if chute:
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
 
+"""
+@brinabot.on_message(filters.me & filters.command("reloadlobo"))
+def reload_lobo(client, message):
+	pass
+	
+def reloaded():
+	idmessagelobo = sqlite.executa("SELECT idmessage FROM lobo")
+	for message in brinabot.get_discussion_replies(LOBINDIE, idmessagelobo[0]):
+		print(message)
+		envia_lobo(brinabot, message)
+
+with brinabot:
+	reloaded()
+"""
+		
 @brinabot.on_message(filters.reply & filters.chat(LOBINDIE))
 def atualiza_palavra(client, message):
 	if message.text and len(message.text) < 80:
@@ -287,7 +337,7 @@ def muta_grupo(client, message):
 		client.edit_message_text(message.chat.id, messageid.id, f"<b>⚠ | O grupo será mutado em segundos.{dot}</b>")
 	client.edit_message_text(message.chat.id, messageid.id, "<b>O grupo está mutado</b> 🔇")
 
-@brinabot.on_message(filters.chat(LOBINDIE) & filters.regex("🏆 Parabéns aos ganhadores!") & filters.bot)
+@brinabot.on_message(filters.chat(LOBINDIEFIXO) & filters.regex("🏆 Parabéns aos ganhadores!") & filters.bot)
 def libera_grupo(client, message):
 	try:
 		client.set_chat_permissions(message.chat.id, ChatPermissions(can_send_messages = True, can_send_media_messages=True, can_send_other_messages=True, can_send_polls= True, can_add_web_page_previews= True, can_invite_users= True))
@@ -346,6 +396,61 @@ def ver_palavras(client, message):
 	else:
 		palavras= "Nao há palavras."
 	client.send_message(message.chat.id, palavras)
+
+import demoji
+
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("adicionar"))
+def add_bulas(client, message):
+	bulas = message.text.replace("/adicionar ","").split("\n")
+	for bula in bulas:
+		print("oi")
+		bula = demoji.replace(bula, "")
+		executa_query(f"INSERT INTO bulas(nome) VALUES ('{bula.strip()}')", "insert")
+
+
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("pesquisar"))
+def pesquisa_bulas(client, message):
+	bulas = message.text.replace("/pesquisar ","").split(",")
+	print(bulas)
+	encontradas = ""
+	for bula in bulas:
+		buscabula = executa_query(f"SELECT nome FROM bulas WHERE nome = '{bula.strip()}'", "select")
+		print(buscabula)
+		if buscabula:
+			print("encontrado")
+			encontradas += f"{bula}\n"
+	if encontradas:
+		client.send_message(message.chat.id, f"As seguintes bulas foram encontradas:\n\n{encontradas}")
+	else:
+		client.send_message(message.id, f"Nenhuma bula foi encontrada.")
+		
+		
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("eval"))
+def comando_eval(client, message):
+	comando = message.text.replace("/eval ", "")
+	eval(comando)
+
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("modulos"))
+def comando_modulos(client, message):
+	comando = message.text.split()
+	if len(comando) > 1:
+		executa_query(
+			f"UPDATE modulos SET {comando[1]} = CASE WHEN {comando[1]} = TRUE THEN FALSE ELSE TRUE END WHERE grupoid = {LOBINDIE}", "update"
+		)
+		client.send_message(message.chat.id, f"O módulo {comando[1]} foi alternado.")
+	else:
+		status = executa_query(
+			f"SELECT * FROM modulos WHERE grupoid = '{LOBINDIE}'", "select", True
+		)[0]
+		modulos = f"""palavra_secreta: {status["palavra_secreta"]}
+	lobo: {status["lobo"]}
+	quiz: {status["quiz"]}
+	call: {status["callmembros"]}
+	aniver: {status["aniver"]}
+	tenthings: {status["tenthings"]}
+	""".replace("1", "Ativado")
+		client.send_message(message.chat.id, modulos)
+	
 	
 # Defina o filtro para capturar o evento ChatMemberUpdated
 @brinabot.on_chat_member_updated(filters.chat(LOBINDIE))
@@ -361,7 +466,52 @@ def handle_chat_member_updated(client, update):
             print(f"Novo membro com username: @{username}")
         else:
             print("Novo membro sem username")
+            
+@brinabot.on_message(filters.new_chat_members & filters.chat(LOBINDIE))
+def comando_novos_membros(client, message):
+	membro = message.new_chat_members[0]
+	for idmembro in membroslb.get_membros().keys():
+		
+		if membro.id == idmembro:
+			username = membro.username if membro.username is not False else ""
+			if username:
+				executa_query(f"UPDATE membros SET username = '@{membro.username}' WHERE iduser = '{idmembro}'", "update")
+		else:
+			executa_query(f"UPDATE membros SET username = '@{membro.username}' WHERE iduser = '{idmembro}'", "update")
+			
+		
+	
+@brinabot.on_message(filters.poll & filters.chat(int(INDIEMUSIC)))
+def comando_poll_indiemusic(client, message):
+	link_poll = f"<a href='https://t.me/c/{INDIEMUSIC[4:]}/{message.id}'>CLIQUE AQUI</a>"
+	votacao = f"""A VOTAÇÃO para decisão da música da semana já iniciou.
 
+↳ {link_poll} para ter acesso e deixar seu voto 🎶🎶"""
+	client.send_message(LOBINDIE, votacao)
+	print("poll")
+
+
+def grupo_gamee(estado):
+	if estado:
+		brinabot.set_chat_permissions(
+			LOBINDIE, 
+			ChatPermissions(
+        		can_send_messages=True,
+        		can_send_media_messages=True,
+        		can_send_other_messages=True,
+        		can_add_web_page_previews=True,
+        		can_send_polls=True
+        		)
+		)
+		
+	else:
+		brinabot.copy_message(TESTES, IMAGENS, 2)
+		brinabot.set_chat_permissions(
+			LOBINDIE, 
+			ChatPermissions(
+        		can_send_messages=False
+        		)
+		)
 
 ids = ()
 @brinabot.on_message(filters.chat(LOBINDIE))
@@ -383,20 +533,37 @@ def handle_all_messages(client, message):
 			chute = conferir_chute(message.text, ps.palavras)
 			if chute:
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
+   
+def posta_indiemusic():
+	brinabot.copy_message(LOBINDIE, TESTES, 8210)
 
+def encerra_indiemusic():
+	brinabot.copy_message(LOBINDIE, TESTES, 8211)
+
+#modulo.postar_lobo()
+def sched_erro():
+	brinabot.send_message(TESTES, "Tarefa deu erro")
 #help(schedule.run_pending())
 sched = BackgroundScheduler(daemon=True, timezone=tz)
 try: 
-	sched.add_job(postando_lobo,'cron',day_of_week= 'mon, wed, fri', hour = '00', minute = '01')
-	sched.add_job(sorteando_lobo,'cron', day_of_week= 'mon, wed, fri', hour = '20', minute = '00')
+	sched.add_job(modulo.postar_lobo,'cron',day_of_week= 'mon, wed, fri', hour = '00', minute = '01', args=[postando_lobo])
+	sched.add_job(modulo.postar_lobo,'cron', day_of_week= 'mon, wed, fri', hour = '20', minute = '01', args =[sorteando_lobo])
 	
-	sched.add_job(postando_palavra_secreta,'cron', day_of_week= 'tue, thu, sat', hour = '00', minute = '01')
-	sched.add_job(dicas_ativadas,'cron', day_of_week= 'tue, thu,sat', hour = '16', minute = '28')
-	sched.add_job(palavra_secreta_finalizada,'cron', day_of_week= 'tue, thu, sat', hour = '23', minute = '59')
+	sched.add_job(modulo.postar_ps, 'cron', day_of_week= 'tue, thu', hour = '00', minute = '01', args =[postando_palavra_secreta])
+	sched.add_job(modulo.postar_ps,'cron', day_of_week= 'tue, thu', hour = '16', minute = '00', args = [dicas_ativadas])
+	sched.add_job(modulo.postar_ps,'cron', day_of_week= 'tue, thu, sat', hour = '23', minute = '59', args = [palavra_secreta_finalizada])
+	
+	sched.add_job(modulo.postar_tenthings, 'cron', day_of_week= 'sat', hour = '00', minute = '01', args = [tenthings])
+
+	sched.add_job(grupo_gamee,'cron', day_of_week= 'sat', hour = '23', minute = '59', args = [True])
+	sched.add_job(grupo_gamee,'cron', day_of_week= 'sun', hour = '23', minute = '59', args = [False])
+	
+	sched.add_job(posta_indiemusic, 'cron', day_of_week= 'mon', hour = '08')
+	sched.add_job(encerra_indiemusic, 'cron', day_of_week= 'mon', hour = '23', minute = '58')
 except Exception as E:
 	with brinabot:
 		brinabot.send_message(LOGS, E)
-
+		
 #sched.add_job(postando_lobo,'interval', minutes = 5)
 #sched.add_job(sorteando_lobo,'interval', minutes = 1)
 sched.start()
