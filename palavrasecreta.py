@@ -20,7 +20,7 @@ def postando_palavra_secreta(chat = LOBINDIE):
     #Sorteando um tema para o palavra secreta
 	tema = executa_query('SELECT tema FROM palavra_secreta WHERE postado = (SELECT MIN(postado) FROM palavra_secreta) ORDER BY RAND () LIMIT 1', 'select')[0]
 	#sorteando as palavras com o tema sorteado
-	palavras = executa_query(f"SELECT tema, palavras, dicas FROM palavra_secreta WHERE postado = (SELECT MIN(postado) FROM palavra_secreta) AND tema = \'{tema[0]}\' ORDER BY RAND() LIMIT 5;", 'select')
+	palavras = executa_query(f"SELECT tema, palavras, dicas FROM palavra_secreta WHERE utilizada = FALSE AND postado = (SELECT MIN(postado) FROM palavra_secreta) AND tema = \'{tema[0]}\' ORDER BY RAND() LIMIT 5;", 'select')
 	print('palavras cruas do sql', palavras)
 	#revisar
 	#sql = f"UPDATE palavra_secreta SET postado = postado + 1 WHERE tema = '{tema[0]}'"
@@ -202,22 +202,26 @@ def palavra_secreta_finalizada(chat = LOBINDIE):
 		vencedoreslista = palavrasecreta['vencedores'].split(' - ')
 		_, vencedoresplacar = formata_vencedores(vencedoreslista)
 		mensagem = f"placar\n\n{vencedoresplacar}"
-		brinabot.send_message(STAFF, mensagem) 
+		brinabot.send_message(STAFF, mensagem)
+		data = DateTimeInfo()
 		for acertada in acertadas:
-			sql = f"DELETE FROM palavra_secreta WHERE palavras = '{acertada}'"
+			print(data.hoje)
+			print(type(data.hoje))
+			sql = f"UPDATE palavra_secreta SET utilizada = TRUE, datapost = '{str(data.hoje)}' WHERE palavras = '{acertada}'"
+			print(sql)
 			#revisar
-			executa_query(sql, "delete")
+			executa_query(sql, "update")
 		
 	brinabot.send_message(chat, "<b>Dinâmica encerrada! ⌛️</b>", reply_to_message_id=palavrasecreta['idmessage'])
+	brinabot.unpin_chat_message(LOBINDIE, palavrasecreta["idmessage"])
 	
 	sql = f"UPDATE palavra_teste SET status = 0 WHERE idmessage = {palavrasecreta['idmessage']}"
 	executa_query(sql, "update")
-	sql = f"UPDATE palavra_secreta SET tema = tema+1 WHERE tema = '{palavrasecreta['tema']}'"
-	executa_query(sql, "update")
+	sql = f"UPDATE palavra_secreta SET postado = postado+1 WHERE tema = '{palavrasecreta['tema']}'"
+	#executa_query(sql, "update")
 	ps.palavras = {}
 	return
-
-
+	
 def verifica_palavra_postado(chat = LOBINDIE):
 	"""
     Verifica se é necessário postar a palavra secreta com base na data e hora atual.
@@ -230,11 +234,11 @@ def verifica_palavra_postado(chat = LOBINDIE):
 
 	"""
 	# obtém o nome do dia da semana correspondente ao número
-	if infodata.semana in ('Tuesday', 'Thursday', 'Saturday'):
+	if infodata.semana in ('Tuesday', 'Thursday', 'Wednesday'):
 		comando = "SELECT data, status FROM palavra_teste ORDER BY id DESC LIMIT 1;"
 		infops = executa_query(comando, "select")[0]
 		diapalavra = infops[0].strftime("%Y-%m-%d")
-		if infodata.hoje != diapalavra:
+		if infodata.hoje != diapalavra and infodata.hora < 1:
 			with brinabot:
 				return postando_palavra_secreta(chat)
 		else:

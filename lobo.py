@@ -7,6 +7,7 @@ import time
 
 
 def postando_lobo(chat = LOBINDIE, messageid = False):
+	print("oi")
 	"""
     Envia a postagem do jogo "Lobo" no grupo, exibindo os números dos membros fixos.
 
@@ -42,7 +43,7 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 	if messageid:
 		brinabot.edit_message_text(chat, messageid, atualizado)
 	else:
-		messageid = brinabot.copy_message(chat, -1001217627450, idfoto, atualizado).id	
+		messageid = brinabot.copy_message(chat, -1001217627450, idfoto, atualizado).id
 		# insere a data na tabela lobo
 		hoje = DateTimeInfo()
 		sqlite.update(f"UPDATE lobo SET data='{hoje}', idmessage = {messageid}")

@@ -5,19 +5,52 @@ import random
 import time
 from botinit import brinabot
 import sqlite3
+from info import LOBINDIE
 
-def call(chatid = False, mensagem = False, chamar=True):
-	sql = "SELECT username FROM membros WHERE username NOT LIKE '%bot%' AND username != '@Null'"
-	membros = [item[0] for item in executa_query(sql, "select")]
+class Modulos:
+    def __init__(self):
+        status = executa_query(
+        	f"SELECT * FROM modulos WHERE grupoid = '{LOBINDIE}'", "select", True
+        )[0]
+        self.ps= status["palavra_secreta"]
+        self.lobo = status["lobo"]
+        self.quiz = status["quiz"]
+        self.call = status["callmembros"]
+        self.aniver = status["aniver"]
+        self.tenthings = status["tenthings"]
+
+    def postar_lobo(self, funcao_lobo):
+    	if self.lobo:
+    		funcao_lobo()
+    
+    def postar_ps(self, funcao_ps):
+    	if self.ps:
+    		funcao_ps()
+    		
+    def postar_call(self, funcao_call):
+    	if self.call:
+    		funcao_call()
+
+    def postar_aniver(self, funcao_aniver):
+    		if self.aniver:
+    			funcao_aniver()
+    		
+    def postar_tenthings(self, funcao_tenthings):
+    		if self.tenthings:
+    			funcao_tenthings()
+modulo = Modulos()
+
+def call(chatid = False, mensagem = False):
+	sql = "SELECT username FROM membros WHERE username NOT LIKE '%bot%'"
+	membros = executa_query(sql, "select")
+	membros = list(membros)
 	random.shuffle(membros)
-	for i in range(0, len(membros), 3):
-		if not chamar:
+	for membro in membros:
+		if modulo.call is False:
+			brinabot.send_message(chatid, "A call foi cancelada.")
 			break
-		grupo = membros[i:i+3]
-		grupo = ' '.join(grupo)
-		brinabot.send_message(chatid, grupo + mensagem)
-		time.sleep(2)
-	brinabot.send_message(chatid, "Call cancelado.")
+		brinabot.send_message(chatid, f"{membro[0]} {mensagem}")
+		time.sleep(random.randint(1,2))
 
 def placar_quiz(resultado, client):
 	resultado = resultado.replace("  ", " ")  # Remove double spaces
@@ -29,7 +62,7 @@ def placar_quiz(resultado, client):
 		pontos = int(pontos) * 3
 		if jogador.startswith("@"):
 			try:
-				time.sleep(1)
+				time.sleep(0.2)
 				membro = client.get_chat_member(-1001366864342, f"{jogador}")
 				
 				nome_membro = dict_membros.get(membro.user.id, membro.user.first_name)
@@ -37,9 +70,21 @@ def placar_quiz(resultado, client):
 				continue
 		else:
 			nome_membro = jogador
+
 		if pontos > 0:
 			placar = f"{placar}{nome_membro} {pontos}\n"
+	aplicador_pontos = soma(placar)
+	placar = f"{placar}aplicador {aplicador_pontos//5}"
 	return placar
+	
+#soma 
+def soma(placar):
+	soma = placar.split()
+	resultado = 0
+	for num in soma:
+		if num.isdigit():
+			resultado += int(num)
+	return resultado
 	
 
 	
@@ -74,7 +119,7 @@ class MembrosLobindie:
 			
 membroslb = MembrosLobindie()
 membroslb.get_membros()
-	
+
 dict_membros = atualizar_membros()
 
 # confere se o chute do usuario esra correto

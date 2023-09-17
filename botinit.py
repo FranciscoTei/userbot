@@ -2,8 +2,8 @@ from pyrogram import Client
 from info import *
 
 def get_bot():
-	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number="+5511933492858", password="190701")
-	return
+	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="1234")
+	return bot
 
 brinabot = get_bot()
 class Bot(Client):
@@ -12,7 +12,7 @@ class Bot(Client):
 		name="Bot",
 		api_hash=API_HASH,
 		api_id=API_ID,
-		session=SESSION
+		session="SESSION"
 		)
 	def run(self):
 		super().run()
