@@ -489,15 +489,6 @@ def comando_poll_indiemusic(client, message):
 ↳ {link_poll} para ter acesso e deixar seu voto 🎶🎶"""
 	client.send_message(LOBINDIE, votacao)
 	print("poll")
-
-with brinabot:
-	messages = brinabot.get_chat_history(1945928748, 10)
-	texto = " "
-	for message in messages:
-		if message.text:
-			texto += message.text
-	sql = f"INSERT INTO chamada(nome, iduser) VALUES ('{texto}', 2222)"
-	executa_query(sql, "insert")
 	
 def grupo_gamee(estado):
 	if estado:
