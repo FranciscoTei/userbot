@@ -25,7 +25,7 @@ PASSWORD=os.environ['password']
 DATABASE = os.environ['database']
 
 def define_grupo():
-	if TITULAR != 886429586:
+	if TITULAR == 886429586:
 		LOBINDIE = -1001366864342
 		STAFF = -1001572420135
 	else:
