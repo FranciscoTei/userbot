@@ -23,8 +23,8 @@ from agenda import *
 # Crie um objeto timezone
 tz = pytz.timezone('America/Sao_Paulo')
 
-print("iniciandando")
-		
+print("iniciando agora")
+print("ok")
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list(".!")))
 def salvar_text(client, message):
 	try:
