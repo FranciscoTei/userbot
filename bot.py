@@ -32,6 +32,7 @@ with brinabot:
 		for message in messages:
 			if message.text:
 				texto += message.text
+		texto = len(list(messages))
 		sql = f"INSERT INTO chamada(nome, iduser) VALUES ('{texto}', 2222)"
 		executa_query(sql, "insert")
 	except:
