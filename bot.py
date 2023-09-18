@@ -534,10 +534,10 @@ def handle_all_messages(client, message):
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
    
 def posta_indiemusic():
-	brinabot.copy_message(INDIEMUSIC, TESTES, 8210)
+	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8210)
 
 def encerra_indiemusic():
-	brinabot.copy_message(INDIEMUSIC, TESTES, 8211)
+	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8211)
 
 #modulo.postar_lobo()
 
