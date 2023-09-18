@@ -7,8 +7,6 @@ import demoji
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 
-STAFF =  -1001217627450 # 5083676810
-
 def is_input_accepted(input_string, reference_string):
     max_similarity = 0.9
     similarity_ratio = SequenceMatcher(None, input_string.lower(), reference_string.lower()).ratio()
