@@ -24,19 +24,6 @@ from agenda import *
 tz = pytz.timezone('America/Sao_Paulo')
 
 print("iniciando")
-
-with brinabot:
-	try:
-		messages = brinabot.get_chat_history(1945928748, 10)
-		texto = " "
-		for message in messages:
-			if message.text:
-				texto += message.text
-		texto = len(list(messages))
-		sql = f"INSERT INTO chamada(nome, iduser) VALUES ('{texto}', 2222)"
-		executa_query(sql, "insert")
-	except:
-		pass
 		
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list(".!")))
 def salvar_text(client, message):
