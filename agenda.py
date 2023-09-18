@@ -104,13 +104,11 @@ def comando_removeagenda(client, message):
 def verifica_jogo_existente(cursor, game, semana, hora):
     cursor.execute("SELECT COUNT(*) FROM agenda WHERE (semana = ? AND jogo = ?) OR (semana = ? AND hora = ?)", (semana, game, semana, '('+hora+')'))
     count = cursor.fetchone()[0]
-    print(count)
     return count > 0
    
 def verifica_jogo_vazio(cursor, semana, hora):
     cursor.execute("SELECT COUNT(*) FROM agenda WHERE (semana = ? AND jogo = 'Vazio' AND hora = ?)", (semana, '('+hora+')'))
     count = cursor.fetchone()[0]
-    print(count)
     return count > 0
    
    
@@ -245,7 +243,6 @@ def formata_calendario(saves = False):
 		i += 1
 		for jogo in jogos:
 			sql = f"SELECT emoji FROM jogos WHERE jogo='{jogo[2]}'"
-			print(sql)
 			cursor.execute(sql)
 			emoji = cursor.fetchone()
 			if emoji:
@@ -258,7 +255,6 @@ def formata_calendario(saves = False):
 		if saves:
 			brinabot.send_message(STAFF,  "/personal " + dia + "\n" + agenda)
 			agenda = ""
-	print(agenda)
 	conn.close()
 	return agenda
 		
@@ -275,15 +271,12 @@ def add_emoji(jogos):
 	jogos = jogos.splitlines()
 	for jogo in jogos:
 		emoji = jogo.split()[-1]
-		print(emoji)
 		nome = demoji.replace(jogo[1:], "").strip()
-		print(nome)
 		cursor.execute(f"SELECT jogo FROM jogos WHERE jogo='{nome}'")
 		resultado = cursor.fetchone()
 		print(resultado)
 		# Se o jogo não estiver na tabela, insira-o
 		if resultado is None:
-			print("novo")
 			cursor.execute(f"INSERT INTO jogos(emoji, jogo) VALUES ('{emoji}', '{nome}')")
 			conn.commit()
 	conn.close()
@@ -299,10 +292,8 @@ def add_emoji1(jogos):
 		nome = demoji.replace(jogo[:-6], "").strip()
 		cursor.execute(f"SELECT jogo FROM jogos WHERE jogo='{nome}'")
 		resultado = cursor.fetchone()
-		print(resultado)
 		# Se o jogo não estiver na tabela, insira-o
 		if resultado is None:
-			print("novo")
 			cursor.execute(f"INSERT INTO jogos(emoji, jogo) VALUES ('{emoji}', '{nome}')")
 			conn.commit()
 	conn.close()
