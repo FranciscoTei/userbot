@@ -180,7 +180,7 @@ def format_titles_and_links(titles_and_links):
 			#membro = f'@{brinabot.get_chat_member(-1001366864342, iduser).user.username}'
 		except Exception as e:
 			print(e)
-		if bool(membro):
+		if membro:
 			result += f'{membro}'
 		else:
 			result += f'<a href="tg://user?id={iduser}">{nome}</a>'

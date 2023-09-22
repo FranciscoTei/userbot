@@ -52,7 +52,7 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 	
 
 def confere_casa(numero):
-
+	print(numero)
 	casa = sqlite.executa(f"SELECT casa FROM casas WHERE numero = {numero}")
 
 	return casa[0]
@@ -112,7 +112,8 @@ def sorteando_lobo(chat = LOBINDIE):
 	casa = confere_casa(sorteado)
 	ganhadorcasa = executa_query(f"SELECT iduser, nomeuser, username FROM lobo WHERE casa = '{casa}'", "select")
 
-	pontos = sqlite.executa("SELECT pontos FROM lobo")[0]
+	pontos, idmessage = sqlite.executa("SELECT pontos, idmessage FROM lobo")
+	brinabot.unpin_chat_message(chat, idmessage)
 	
 	try:
 		if not ganhadorexato and not ganhadorcasa:
@@ -142,7 +143,8 @@ def sorteando_lobo(chat = LOBINDIE):
 	except Exception as Erros:
 		brinabot.send_message(LOGS, Erros)
 	finally:
-		encerra_lobo()
+		pass
+		#encerra_lobo()
 			
 
 def atualiza_pontos_lobo(case, pontos):
@@ -153,7 +155,9 @@ def atualiza_pontos_lobo(case, pontos):
 def encerra_lobo():
 	executa_query("DELETE FROM lobo WHERE fixo = 0", "delete")
 	sqlite.update("UPDATE lobo SET idmessage = 0")
-	
 
+if __name__ == "__main__":
+	with brinabot:
+		sorteando_lobo()
 
 	

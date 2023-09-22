@@ -9,8 +9,8 @@ os.environ["api_id"] = "28357147"
 os.environ["host"] = 'uyu7j8yohcwo35j3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com'
 os.environ["user"] = 'h2xwhmugacxbwv79'
 os.environ["password"] ='mfuwh70z5pjq0jwb'
-os.environ["database"] = 'q6p5up8xhrrbmyq0'
-"""
+os.environ["database"] = 'q6p5up8xhrrbmyq0'"""
+
 
 #Bot information
 API_HASH = os.environ['api_hash']
@@ -35,12 +35,13 @@ def define_grupo():
 		
 #Admins, Channels & Users
 LOGS= -1001865449571
-TITULAR = 886429586 #mudar
+TITULAR = 886429586 # 934735022#mudar
 AUTORIZADOS = [836445988, 934735022, 934923747, 886429586]
 LOBINDIEFIXO= -1001366864342
 LOBINDIE, _ = define_grupo()#mudar
 TESTES = -1001217627450
-INDIEMUSIC = "-1001302341410"
+INDIECANAL= "-1001484956109"
+INDIEMUSIC = -1001302341410
 _, STAFF = define_grupo() #mudar
 RANKING = -423539628
 IMAGENS = -1001984560446

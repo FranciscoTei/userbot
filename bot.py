@@ -50,7 +50,7 @@ def comando_addlobo(client, message):
 	try:
 		usuario = client.get_chat_member(LOBINDIEFIXO, f"{membro}")
 		membronome = dict_membros.get(usuario.user.id, usuario.user.first_name)
-		membro_username = usuario.user.username or ""
+		membro_username = "@"+usuario.user.username or ""
 		sql = f"INSERT INTO lobo (iduser, nomeuser, numero, casa, username) VALUES ('{usuario.user.id}', '{membronome}', {numero}, '{casa}', '{membro_username}')"
 		executa_query(sql, "insert")
 		client.send_message(message.chat.id, f"{membronome} adicinado com número {numero}.")
@@ -68,7 +68,6 @@ def comando_reload(client, message):
 		try:
 			usuario  = client.get_chat_member(LOBINDIEFIXO, userid[0])
 			username = usuario.user.username if usuario.user.username is not None else "Null"
-			print(username)
 			executa_query(f"UPDATE membros SET username = '@{username}' WHERE iduser = '{userid[0]}'", "update")
 			time.sleep(0.2)
 		except Exception as E:
@@ -269,7 +268,7 @@ def comando_validar_palavra(client, message):
 	chute = conferir_chute(message.reply_to_message.text, ps.palavras)
 	palavra_secreta(message.reply_to_message.from_user, chute, message.reply_to_message.id, message.chat.id)
 	
-@brinabot.on_message(filters.reply & filters.chat(LOBINDIE))
+@brinabot.on_message(filters.reply & filters.chat(LOBINDIE) & filters.text)
 def envia_lobo(client, message):
 	"""
     Função para processar mensagens de resposta relacionadas ao jogo "Lobo".
@@ -299,7 +298,7 @@ def envia_lobo(client, message):
 	
 	# Conferindo se o usuário chutou uma palavra secreta
 	else:
-		if message.text and len(message.text) < 80:
+		if message.text and len(message.text) < 80 and ps.palavras:
 			chute = conferir_chute(message.text, ps.palavras)
 			if chute:
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
@@ -534,10 +533,10 @@ def handle_all_messages(client, message):
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
    
 def posta_indiemusic():
-	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8210)
+	brinabot.copy_message(INDIEMUSIC, TESTES, 8210)
 
 def encerra_indiemusic():
-	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8211)
+	brinabot.copy_message(INDIEMUSIC, TESTES, 8211)
 
 #modulo.postar_lobo()
 
