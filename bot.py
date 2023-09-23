@@ -204,6 +204,10 @@ def sorteia_lobo(client, message):
 	else:
 		sorteando_lobo(message.chat.id)
 		client.delete_messages(message.chat.id, message.id)
+		
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("ping"))
+def comando_ping(client, message):
+	client.send_message(message.chat.id, "Pong!")
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlite", prefixes=list(".!")))
 def comando_sqlite(client, message):

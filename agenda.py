@@ -56,8 +56,8 @@ def comando_formatafilters(client, message):
 	client.send_message(message.chat.id, agenda)
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list(".!")))
-def comando_sqlite(client, message):
-	comando = message.text.replace(".sqlite ", "")
+def comando_sqlagenda(client, message):
+	comando = message.text.replace(".sqlagenda ", "")
 	try:
 		conn = sqlite3.connect("agenda.db")
 		cursorr = conn.cursor()
