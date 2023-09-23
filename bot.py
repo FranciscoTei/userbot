@@ -76,9 +76,9 @@ def comando_reload(client, message):
 	
 def tenthings():
 	brinabot.add_chat_members(LOBINDIE, "@TenThings_Bot")
-	regras10things = brinabot.copy_message(TESTES, -1001217627450, 7590)
+	regras10things = brinabot.copy_message(LOBINDIE, IMAGENS, 3)
 	brinabot.pin_chat_message(LOBINDIE, regras10things.id)
-	brinabot.copy_message(LOBINDIE, TESTES, 5330)
+	brinabot.copy_message(LOBINDIE, IMAGENS, 4)
 
 	agora = datetime.datetime.now()
 	meio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0)
@@ -486,7 +486,7 @@ def comando_poll_indiemusic(client, message):
 	votacao = f"""A VOTAÇÃO para decisão da música da semana já iniciou.
 
 ↳ {link_poll} para ter acesso e deixar seu voto 🎶🎶"""
-	client.send_message(LOBINDIE, votacao)
+	client.send_message(INDIECANAL, votacao)
 	print("poll")
 	
 def grupo_gamee(estado):
@@ -533,10 +533,10 @@ def handle_all_messages(client, message):
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
    
 def posta_indiemusic():
-	brinabot.copy_message(INDIEMUSIC, TESTES, 8210)
+	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8210)
 
 def encerra_indiemusic():
-	brinabot.copy_message(INDIEMUSIC, TESTES, 8211)
+	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8211)
 
 #modulo.postar_lobo()
 
