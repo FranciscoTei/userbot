@@ -7,47 +7,82 @@ import demoji
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 
+
 def is_input_accepted(input_string, reference_string):
-    max_similarity = 0.9
+    if len(input_string) < 10:
+    	max_similarity = 0.80
+    else:
+    	max_similarity = 0.85
     similarity_ratio = SequenceMatcher(None, input_string.lower(), reference_string.lower()).ratio()
     if similarity_ratio >= max_similarity:
     	print(reference_string, similarity_ratio)
     return similarity_ratio >= max_similarity
     
-@brinabot.on_message(filters.chat(STAFF) & filters.command("addemoji"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("addemoji"))
 def boss_comando(client, message):
 	jogos = message.text.replace("/addemoji", "").replace("/addemoji ", "")
 	print(jogos)
 	if jogos:
 		add_emoji(jogos)
 
-@brinabot.on_message(filters.chat(STAFF) & filters.command("vagenda"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagenda"))
 def comando_formataagenda(client, message):
 	agenda = formata_agenda()
 	client.send_message(message.chat.id, agenda)
 	
-@brinabot.on_message(filters.chat(STAFF) & filters.command("vagendac"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
 	agenda = formata_agenda(True)
 	client.send_message(message.chat.id, agenda)
 	
-@brinabot.on_message(filters.chat(STAFF) & filters.command("vcalendario"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vcalendario"))
 def comando_formatacalendario(client, message):
 	agenda = formata_calendario()
 	client.send_message(message.chat.id, agenda)
 
-@brinabot.on_message(filters.chat(STAFF) & filters.command("agenda"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("agenda"))
 def comando_salvaagenda(client, message):
 	jogos = message.text.replace("/agenda", "")
 	if jogos:
-		salva_agenda(jogos)
-		client.send_message(message.chat.id, "Jogos salvos.")
+		resultado = salva_agenda(jogos)
+		if len(resultado) < 20:
+			client.send_message(message.chat.id, "Jogos agendados com sucesso.")
+		else:
+			client.send_message(message.chat.id, resultado)
 		
-@brinabot.on_message(filters.chat(STAFF) & filters.command("filters"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("filters"))
 def comando_formatafilters(client, message):
 	agenda = formata_calendario(True)
 	client.send_message(message.chat.id, agenda)
+	
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list(".!")))
+def comando_sqlite(client, message):
+	comando = message.text.replace(".sqlite ", "")
+	try:
+		conn = sqlite3.connect("agenda.db")
+		cursorr = conn.cursor()
+		cursorr.execute(comando)
+		if "select" in comando.lower():
+			resultados = cursorr.fetchall()
+			lista = ""
+			for resultado in resultados:
+				lista += f"{resultado}\n"
+			if message.from_user.id == 886429586:
+				client.edit_message_text(message.chat.id, message.id, f"{lista}\n\n<code>{comando}</code>")
+			else:
+				message.reply(f"{lista}\n\n<code>{comando}</code>")
+		else:
+		 	conn.commit()	 	
+		 	if message.from_user.id == 886429586:
+		 		client.edit_message_text(message.chat.id, message.id, f"Comando executado com sucesso.\n\n<code>{comando}</code>")
+		 	else:
+		 		message.reply("fComando executado com sucesso.\n\n<code>{comando}</code>")
 
+		conn.close()
+	except Exception as e:
+		 client.edit_message_text(message.chat.id, message.id, e)
+		 
+		 
 def formata_dias():
 	data_atual = datetime.now()	
 	# Encontrar o próximo dia da semana (segunda-feira)
@@ -66,12 +101,12 @@ dias_na_semana = formata_dias()
 
 
 # Conectar ao banco de dados (criará um arquivo de banco de dados chamado 'agenda.db' se não existir)
-conn = sqlite3.connect('agenda.db')
+#conn = sqlite3.connect('agenda.db')
 
 # Criar um cursor para executar comandos SQL
-cursor = conn.cursor()
+#cursor = conn.cursor()
 
-@brinabot.on_message(filters.chat(STAFF) & filters.command("dagenda"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("dagenda"))
 def comando_apagaagenda(client, message):
 	conn = sqlite3.connect('agenda.db')
 	try:
@@ -82,21 +117,28 @@ def comando_apagaagenda(client, message):
 		#cursor.execute("UPDATE jogos SET jogo = LOWER(jogo);")
 		conn.commit()
 		conn.close()
+		client.send_message(message.chat.id, "Agenda resetada.")
 	except Exception as E:
 		print(E)
 		
-@brinabot.on_message(filters.chat(STAFF) & filters.command("daplicador"))
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("daplicador"))
 def comando_removeagenda(client, message):
 	conn = sqlite3.connect('agenda.db')
-	aplicador = message.text.split()[1]
+	cursor = conn.cursor()
+	#aplicador = message.text.split()[1] or ""
+	aplicador = message.text.replace("/daplicador", "").strip()
 	if aplicador:
 	
 	# Criar um cursor para executar comandos SQL
-		cursor = conn.cursor()
-		cursor.execute(f"DELETE FROM agenda WHERE aplicador ='{aplicador}'")
-		#cursor.execute("UPDATE jogos SET jogo = LOWER(jogo);")
-		conn.commit()
-		conn.close()
+		cursor.execute(f"DELETE FROM agenda WHERE aplicador = '{aplicador.capitalize()}' AND fixo IS NULL")
+		deleted_rows = cursor.rowcount # Obtém o número de linhas deletadas
+		if deleted_rows > 0:
+			conn.commit()
+			conn.close()
+			client.send_message(message.chat.id, f"Foram removidos {deleted_rows} jogos de {aplicador} da agenda.")
+		else:
+			 conn.close()
+			 client.send_message(message.chat.id, f"Não foram encontrados jogos agendados para {aplicador}.")
 
 	
 def verifica_jogo_existente(cursor, game, semana, hora):
@@ -129,7 +171,7 @@ def salva_agenda(agenda):
 			if not aplicador_definido:
 				aplicador = jogo.split(" ")[-1][:-1].capitalize()
 				aplicador_definido  = True
-				jogos_errados += f"\njogos errados do {aplicador}:\n\n"
+				jogos_errados += f"❌ Erro ao agendar\n\n"
 			else:
 				dados_do_jogo = jogo.split(" - ",1)
 				dia_semana, hora = dados_do_jogo[0].split(" ")
@@ -159,11 +201,12 @@ def salva_agenda(agenda):
 					cursor.execute(sql)
 					conn.commit()
 				else:
-					jogos_errados += f"{jogo}\n"
-	brinabot.send_message(STAFF, jogos_errados)
+					jogos_errados += f"{dia_semana} {hora} não está disponível\n"
+	#brinabot.send_message(STAFF, jogos_errados)
 					
 		#aplicador_definido= False
 	conn.close()
+	return jogos_errados
 #salva_agenda(agenda)
 
 def formata_agenda(camps = False):
@@ -296,9 +339,11 @@ def add_emoji1(jogos):
 			conn.commit()
 	conn.close()
 
-sql = f"SELECT * FROM jogos"
-cursor.execute(sql)
+#sql = f"SELECT * FROM jogos"
+#cursor.execute(sql)
 #print(cursor.fetchall())
 # Salvar as alterações e fechar a conexão com o banco de dados
-conn.commit()
-conn.close()
+#conn.commit()
+#conn.close()
+print("init")
+brinabot.run()

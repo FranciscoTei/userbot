@@ -143,7 +143,8 @@ def sorteando_lobo(chat = LOBINDIE):
 	except Exception as Erros:
 		brinabot.send_message(LOGS, Erros)
 	finally:
-		encerra_lobo()
+		pass
+		#encerra_lobo()
 			
 
 def atualiza_pontos_lobo(case, pontos):

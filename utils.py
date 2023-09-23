@@ -193,6 +193,10 @@ def format_titles_and_links(titles_and_links):
 
 from unidecode import unidecode
 
+def validar(valor, valor_substituto=False):
+    valor_validado = valor if valor is not False else valor_substituto
+    return valor_validado
+
 if __name__ == "__main__":
 	string1 = "témòs Acèntôs"
 	string1 = unidecode(string1)

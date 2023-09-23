@@ -265,8 +265,14 @@ def posta_palavra(client, message):
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("validarpalavra"))
 def comando_validar_palavra(client, message):
-	chute = conferir_chute(message.reply_to_message.text, ps.palavras)
-	palavra_secreta(message.reply_to_message.from_user, chute, message.reply_to_message.id, message.chat.id)
+	idmessage = message.text.replace("/validarpalavra","").strip()
+	if idmessage:
+		dados = client.get_messages(LOBINDIE, idmessage)
+		chute = conferir_chute(message.text, ps.palavras)
+		palavra_secreta(message.from_user, chute, message.id, LOBINDIE)
+	else:	
+		chute = conferir_chute(message.reply_to_message.text, ps.palavras)
+		palavra_secreta(message.reply_to_message.from_user, chute, message.reply_to_message.id, message.chat.id)
 	
 @brinabot.on_message(filters.reply & filters.chat(LOBINDIE) & filters.text)
 def envia_lobo(client, message):
