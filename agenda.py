@@ -346,4 +346,3 @@ def add_emoji1(jogos):
 #conn.commit()
 #conn.close()
 print("init")
-brinabot.run()
