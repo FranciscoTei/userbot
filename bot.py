@@ -18,7 +18,7 @@ from palavrasecreta import *
 from lobo import postando_lobo, sorteando_lobo, confere_casa
 from info import *
 from agenda import *
-
+import datetime
 
 # Crie um objeto timezone
 tz = pytz.timezone('America/Sao_Paulo')
@@ -88,7 +88,7 @@ def tenthings():
 @brinabot.on_message((filters.regex("Daily Scores")))
 def pontua_tenthings(client, message):
 	infodata = DateTimeInfo()
-	if infodata.hora != "12":
+	if infodata.hora != 12:
 		return
 	pontuacao = message.text.split("\n")[1:]
 	placar = "placar\n\n"
