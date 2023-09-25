@@ -565,10 +565,10 @@ try:
 	sched.add_job(modulo.postar_tenthings, 'cron', day_of_week= 'sat', hour = '00', minute = '01', args = [tenthings])
 
 	sched.add_job(grupo_gamee,'cron', day_of_week= 'sat', hour = '23', minute = '59', args = [True])
-	sched.add_job(grupo_gamee,'cron', day_of_week= 'sun', hour = '23', minute = '59', args = [False])
+	sched.add_job(grupo_gamee,'cron', day_of_week= 'sun', hour = '21', minute = '00', args = [False])
 	
 	sched.add_job(posta_indiemusic, 'cron', day_of_week= 'mon', hour = '08')
-	sched.add_job(encerra_indiemusic, 'cron', day_of_week= 'mon', hour = '23', minute = '58')
+	sched.add_job(encerra_indiemusic, 'cron', day_of_week= 'mon', hour = '23', minute = '59')
 except Exception as E:
 	with brinabot:
 		brinabot.send_message(LOGS, E)
