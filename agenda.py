@@ -28,12 +28,14 @@ def boss_comando(client, message):
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagenda"))
 def comando_formataagenda(client, message):
 	agenda = formata_agenda()
-	client.send_message(message.chat.id, agenda)
+	agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
+	client.edit_message_text(message.chat.id, 41297, agenda)
 	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
 	agenda = formata_agenda(True)
-	client.send_message(message.chat.id, agenda)
+	agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")	
+	client.edit_message_text(message.chat.id, 41297, agenda)
 	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vcalendario"))
 def comando_formatacalendario(client, message):
