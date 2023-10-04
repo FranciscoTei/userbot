@@ -1,3 +1,4 @@
+# inicializacao do bot
 from pyrogram import Client
 from info import *
 
@@ -5,17 +6,14 @@ def get_bot():
 	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="1234")
 	return bot
 
-brinabot = get_bot()
-class Bot(Client):
-	def __init__(self):
-		super().__init__(
-		name="Bot",
-		api_hash=API_HASH,
-		api_id=API_ID,
-		session="SESSION"
-		)
-	def run(self):
-		super().run()
+try:
+	brinabot = get_bot()
+except Exception as e:
+	print(e)
+	botreserva = Client('bot', API_ID, API_HASH, bot_token="5218571852:AAGfoUCEezSTx0Hs1DisIqZhyOWTzZ8mZrU")
+	with botreserva:
+		botreserva.send_document(836445988, "erros.txt")
+
 """
 with brinabot:
 	try:

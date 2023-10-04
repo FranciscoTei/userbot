@@ -1,13 +1,32 @@
+"""Modulo de todas as funcoes úteis para o bot"""
 import datetime
 from collections import Counter
-from database import executa_query
 import random
 import time
+import pytz
+from database import executa_query
 from botinit import brinabot
-import sqlite3
 from info import LOBINDIE
 
 class Modulos:
+    """
+    Classe que representa um conjunto de módulos com base em informações obtidas por execução de consultas SQL.
+    
+    Attributes:
+        ps (bool): Indica se o módulo "palavra_secreta" está ativado.
+        lobo (bool): Indica se o módulo "lobo" está ativado.
+        quiz (bool): Indica se o módulo "quiz" está ativado.
+        call (bool): Indica se o módulo "callmembros" está ativado.
+        aniver (bool): Indica se o módulo "aniver" está ativado.
+        tenthings (bool): Indica se o módulo "tenthings" está ativado.
+    
+    Methods:
+        postar_lobo(funcao_lobo): Publica conteúdo usando a função fornecida se o módulo "lobo" estiver ativado.
+        postar_ps(funcao_ps): Publica conteúdo usando a função fornecida se o módulo "palavra_secreta" estiver ativado.
+        postar_call(funcao_call): Publica conteúdo usando a função fornecida se o módulo "callmembros" estiver ativado.
+        postar_aniver(funcao_aniver): Publica conteúdo usando a função fornecida se o módulo "aniver" estiver ativado.
+        postar_tenthings(funcao_tenthings): Publica conteúdo usando a função fornecida se o módulo "tenthings" estiver ativado.
+    """
     def __init__(self):
         status = executa_query(
         	f"SELECT * FROM modulos WHERE grupoid = '{LOBINDIE}'", "select", True
@@ -88,9 +107,15 @@ def soma(placar):
 	
 
 	
+# Crie um objeto timezone
+tz = pytz.timezone('America/Sao_Paulo')
+	
 class DateTimeInfo:
+    """
+    Classe para obter informações de data e hora, incluindo o fuso horário de Brasília.
+    """
     def __init__(self):
-        dt = datetime.datetime.now()
+        dt = datetime.datetime.now(tz)
         self.hoje = dt.strftime("%Y-%m-%d")
         self.ano = dt.year
         self.mes = dt.month

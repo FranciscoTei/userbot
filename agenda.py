@@ -19,11 +19,12 @@ def is_input_accepted(input_string, reference_string):
     return similarity_ratio >= max_similarity
     
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("addemoji"))
-def boss_comando(client, message):
+def comando_addemoji(client, message):
 	jogos = message.text.replace("/addemoji", "").replace("/addemoji ", "")
 	print(jogos)
 	if jogos:
 		add_emoji(jogos)
+		client.send_message(message.chat.id, "Emojis adicionados.")
 
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagenda"))
 def comando_formataagenda(client, message):
@@ -34,7 +35,7 @@ def comando_formataagenda(client, message):
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
 	agenda = formata_agenda(True)
-	agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")	
+	agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
 	client.edit_message_text(message.chat.id, 41297, agenda)
 	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vcalendario"))
@@ -110,18 +111,23 @@ dias_na_semana = formata_dias()
 
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("dagenda"))
 def comando_apagaagenda(client, message):
-	conn = sqlite3.connect('agenda.db')
-	try:
-	
-	# Criar um cursor para executar comandos SQL
-		cursor = conn.cursor()
-		cursor.execute("DELETE FROM agenda WHERE fixo is NULL")
-		#cursor.execute("UPDATE jogos SET jogo = LOWER(jogo);")
-		conn.commit()
-		conn.close()
-		client.send_message(message.chat.id, "Agenda resetada.")
-	except Exception as E:
-		print(E)
+    try:
+        with sqlite3.connect('agenda.db') as conn:
+            # Criar um cursor para executar comandos SQL
+            cursor = conn.cursor()
+        
+            # Executar a consulta de exclusão
+            cursor.execute("DELETE FROM agenda WHERE fixo is NULL")
+        
+            # Confirmar as alterações no banco de dados
+            conn.commit()
+        
+            # Fechar automaticamente a conexão quando o bloco 'with' for concluído
+            client.send_message(message.chat.id, "Agenda resetada.")
+    except sqlite3.Error as e:
+        client.send_message(message.chat.id, f"Erro no SQLite: {e}")
+    except Exception as ex:
+        client.send_message(message.chat.id, f"Ocorreu uma exceção: {ex}")
 		
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("daplicador"))
 def comando_removeagenda(client, message):

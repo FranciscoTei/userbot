@@ -1,16 +1,14 @@
 #pylint:disable=W0401
-import json
-import random
 from time import sleep
 import sqlite3
-import pytz
+import datetime
+import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from botinit import brinabot, trata_erro
 from pyrogram import filters
 from pyrogram.types import ChatPermissions
 from pyrogram import raw
-import tgcrypto
 
 from database import executa_query, sqlite
 from utils import *
@@ -18,10 +16,9 @@ from palavrasecreta import *
 from lobo import postando_lobo, sorteando_lobo, confere_casa
 from info import *
 from agenda import *
-import datetime
+import demoji
 
-# Crie um objeto timezone
-tz = pytz.timezone('America/Sao_Paulo')
+logging.basicConfig(filename='erros.txt', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 print("iniciando agora já")
 print("ok")
@@ -406,7 +403,6 @@ def ver_palavras(client, message):
 		palavras= "Nao há palavras."
 	client.send_message(message.chat.id, palavras)
 
-import demoji
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("adicionar"))
 def add_bulas(client, message):
@@ -439,6 +435,10 @@ def comando_eval(client, message):
 	comando = message.text.replace("/eval ", "")
 	eval(comando)
 
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("getlog"))
+def get_log(client, message):
+	brinabot.send_document(message.chat.id, "erros.txt")
+	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("modulos"))
 def comando_modulos(client, message):
 	comando = message.text.split()
@@ -543,10 +543,10 @@ def handle_all_messages(client, message):
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
    
 def posta_indiemusic():
-	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8210)
+	brinabot.copy_message(INDIECANAL, IMAGENS, 6)
 
 def encerra_indiemusic():
-	brinabot.copy_message(int(INDIEMUSIC), TESTES, 8211)
+	brinabot.copy_message(INDIECANAL, TESTES, 7)
 
 #modulo.postar_lobo()
 

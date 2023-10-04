@@ -3,6 +3,7 @@ import sqlite3
 from info import *
 from botinit import trata_erro
 
+
 con = pymysql.connect(host=HOST, user=USER,password=PASSWORD,database = DATABASE)
 
 def executa_query(query, tipo, cursor_dict=False):

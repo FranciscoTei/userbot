@@ -1,28 +1,23 @@
 import os
 
-
-os.environ["number"] = "+5511950891476" #"+5584996412880" 
-"""
-os.environ["api_hash"] = "60914433b8f4fde57c6ba475f572f912"
-os.environ["api_id"] = "28357147"
-
-os.environ["host"] = 'uyu7j8yohcwo35j3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com'
-os.environ["user"] = 'h2xwhmugacxbwv79'
-os.environ["password"] ='mfuwh70z5pjq0jwb'
-os.environ["database"] = 'q6p5up8xhrrbmyq0'"""
+	
+hostfixo = 'uyu7j8yohcwo35j3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com'
+userfixo = 'h2xwhmugacxbwv79'
+passwordfixo ='mfuwh70z5pjq0jwb'
+databasefixo = 'q6p5up8xhrrbmyq0'
 
 
 #Bot information
-API_HASH = os.environ['api_hash']
-API_ID = os.environ['api_id']
-NUMBER = os.environ['number']
-SESSION = os.environ['session']
+API_HASH = os.getenv('api_hash', "60914433b8f4fde57c6ba475f572f912")
+API_ID = os.getenv('api_id', "28357147")
+NUMBER = os.getenv('number', "+5511950891476")
+SESSION = os.getenv('session', False)
 
 #SQL information
-HOST = os.environ['host']
-USER = os.environ['user']
-PASSWORD=os.environ['password']
-DATABASE = os.environ['database']
+HOST = os.getenv('host', hostfixo)
+USER = os.getenv('user', userfixo)
+PASSWORD=os.getenv('password', passwordfixo)
+DATABASE = os.getenv('database', databasefixo)
 
 def define_grupo():
 	if TITULAR == 886429586:
@@ -35,7 +30,10 @@ def define_grupo():
 		
 #Admins, Channels & Users
 LOGS= -1001865449571
-TITULAR = 886429586 # 934735022#mudar
+if SESSION:
+	TITULAR = 886429586
+else:
+	TITULAR = 934735022
 AUTORIZADOS = [836445988, 934735022, 934923747, 886429586]
 LOBINDIEFIXO= -1001366864342
 LOBINDIE, _ = define_grupo()#mudar
