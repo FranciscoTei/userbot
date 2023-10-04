@@ -268,10 +268,10 @@ def posta_palavra(client, message):
 def comando_validar_palavra(client, message):
 	idmessage = message.text.replace("/validarpalavra","").strip()
 	if idmessage:
-		dados = client.get_messages(LOBINDIE, idmessage)
+		message = client.get_messages(LOBINDIE, int(idmessage))
 		chute = conferir_chute(message.text, ps.palavras)
 		palavra_secreta(message.from_user, chute, message.id, LOBINDIE)
-	else:	
+	else:
 		chute = conferir_chute(message.reply_to_message.text, ps.palavras)
 		palavra_secreta(message.reply_to_message.from_user, chute, message.reply_to_message.id, message.chat.id)
 	
