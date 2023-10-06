@@ -18,11 +18,11 @@ from info import *
 from agenda import *
 import demoji
 
-logging.basicConfig(
+"""logging.basicConfig(
 	filename='erros.log', 
 	level=logging.ERROR,
 	format='%(asctime)s - %(levelname)s - %(message)s'
-	)
+	)"""
 
 print("iniciando agora já")
 print("ok")
