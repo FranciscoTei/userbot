@@ -553,26 +553,53 @@ def encerra_indiemusic():
 	brinabot.copy_message(INDIECANAL, TESTES, 7)
 
 #modulo.postar_lobo()
+def gerenciador():
+    dia_na_semana = DateTimeInfo().semana
+    if dia_na_semana == "Sunday":
+    	grupo_gamee(True)
+    	brinabot.send_message(LOBINDIE, "/domingo")
+    	
+    elif dia_na_semana == "Monday":
+        modulo.postar_lobo(postando_lobo)
+        brinabot.send_message(LOBINDIE, "/segunda")
+        
+    elif dia_na_semana == "Tuesday":
+    	modulo.postar_ps(postando_palavra_secreta)
+    	encerra_indiemusic()
+    	brinabot.send_message(LOBINDIE, "/terca")
+    	
+    elif dia_na_semana == "Wednesday":
+        modulo.postar_lobo(postando_lobo)
+        brinabot.send_message(LOBINDIE, "/quarta")
+        
+    elif dia_na_semana == "Thursday":
+    	modulo.postar_ps(postando_palavra_secreta)
+    	brinabot.send_message(LOBINDIE, "/quinta")
 
+    elif dia_na_semana == "Friday":
+    	modulo.postar_lobo(postando_lobo)
+    	brinabot.send_message(LOBINDIE, "/sexta")
+    	
+    elif dia_na_semana == "Saturday":
+    	modulo.postar_tenthings(tenthings)
+    	brinabot.send_message(LOBINDIE, "/sabado")
+  
+	
 def sched_erro():
 	brinabot.send_message(TESTES, "Tarefa deu erro")
 #help(schedule.run_pending())
 sched = BackgroundScheduler(daemon=True, timezone=tz)
 try: 
-	sched.add_job(modulo.postar_lobo,'cron',day_of_week= 'mon, wed, fri', hour = '00', minute = '01', args=[postando_lobo])
 	sched.add_job(modulo.postar_lobo,'cron', day_of_week= 'mon, wed, fri', hour = '20', minute = '01', args =[sorteando_lobo])
-	
-	sched.add_job(modulo.postar_ps, 'cron', day_of_week= 'tue, thu', hour = '00', minute = '01', args =[postando_palavra_secreta])
+
 	sched.add_job(modulo.postar_ps,'cron', day_of_week= 'tue, thu', hour = '16', minute = '00', args = [dicas_ativadas])
 	sched.add_job(modulo.postar_ps,'cron', day_of_week= 'tue, thu, sat', hour = '23', minute = '59', args = [palavra_secreta_finalizada])
-	
-	sched.add_job(modulo.postar_tenthings, 'cron', day_of_week= 'sat', hour = '00', minute = '01', args = [tenthings])
 
-	sched.add_job(grupo_gamee,'cron', day_of_week= 'sat', hour = '23', minute = '59', args = [True])
 	sched.add_job(grupo_gamee,'cron', day_of_week= 'sun', hour = '21', minute = '00', args = [False])
 	
 	sched.add_job(posta_indiemusic, 'cron', day_of_week= 'mon', hour = '08')
-	sched.add_job(encerra_indiemusic, 'cron', day_of_week= 'mon', hour = '23', minute = '59')
+	
+	sched.add_job(gerenciador,'cron', day_of_week= '0-6', hour = '00', minute = '00')
 except Exception as E:
 	with brinabot:
 		brinabot.send_message(LOGS, E)
