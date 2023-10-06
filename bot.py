@@ -18,10 +18,15 @@ from info import *
 from agenda import *
 import demoji
 
-logging.basicConfig(filename='erros.txt', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+#logging.basicConfig(
+#	filename='erros.txt', 
+#	level=logging.ERROR,
+#	format='%(asctime)s - %(levelname)s - %(message)s'
+#	)
 
 print("iniciando agora já")
 print("ok")
+
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list(".!")))
 def salvar_text(client, message):
 	try:
@@ -39,6 +44,10 @@ def salvar_text(client, message):
 	except Exception as erro:
 		 client.send_message(LOGS, erro)
 
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("enquete"))
+def comando_enquete(client, message):
+	cria_enquete(message.text, message.chat.id)
+	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("addlobo", prefixes=list(".!")))
 def comando_addlobo(client, message):
 	membro, numero, *fixo = message.text.replace(".addlobo ","").split()
@@ -164,8 +173,6 @@ def comando_sql(client, message):
 		 		
 	except Exception as e:
          trata_erro(e, sql)
-
-
 		
 @brinabot.on_message(filters.me & filters.command("call"))
 def call_jogo(client, message):
@@ -497,7 +504,6 @@ def comando_poll_indiemusic(client, message):
 
 ↳ {link_poll} para ter acesso e deixar seu voto 🎶🎶"""
 	client.send_message(INDIECANAL, votacao)
-	print("poll")
 	
 def grupo_gamee(estado):
 	if estado:
@@ -521,10 +527,8 @@ def grupo_gamee(estado):
         		)
 		)
 
-ids = ()
 @brinabot.on_message(filters.chat(LOBINDIE))
 def handle_all_messages(client, message):
-	global ids
 	#quant = message.text.replace(" ","")
 	#quant = len(quant)
 	"""listapalavras = message.text.split("\n\n")

@@ -1,8 +1,9 @@
+import json
 from info import *
 from database import executa_query
 from utils import DateTimeInfo, membroslb, infodata, formata_vencedores
 from botinit import brinabot
-import json
+
 
 
 def postando_palavra_secreta(chat = LOBINDIE):
@@ -218,7 +219,7 @@ def palavra_secreta_finalizada(chat = LOBINDIE):
 	sql = f"UPDATE palavra_teste SET status = 0 WHERE idmessage = {palavrasecreta['idmessage']}"
 	executa_query(sql, "update")
 	sql = f"UPDATE palavra_secreta SET postado = postado+1 WHERE tema = '{palavrasecreta['tema']}'"
-	#executa_query(sql, "update")
+	executa_query(sql, "update")
 	ps.palavras = {}
 	return
 	

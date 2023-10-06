@@ -1,13 +1,12 @@
+import random
+import time
 from botinit import brinabot
 from database import executa_query, sqlite
 from info import *
 from utils import DateTimeInfo, format_titles_and_links
-import random
-import time
 
 
 def postando_lobo(chat = LOBINDIE, messageid = False):
-	print("oi")
 	"""
     Envia a postagem do jogo "Lobo" no grupo, exibindo os números dos membros fixos.
 
@@ -27,18 +26,13 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 	lista = ""
 	for nome, numero in numerosfixos:
 		numero = "{:02d}".format(numero)
-		lista = f"{lista}\n {nome}: {numero}"
+		lista = f"{lista}{nome}: {numero}\n"
 		
 	lobomensagem = executa_query("SELECT texto FROM textos WHERE titulo = 'lobomensagem'",
 		"select",
 	)[0][0]
-	
-	lobofinal = executa_query(
-		"SELECT texto FROM textos WHERE titulo = 'lobofinal'",
-		"select"
-	)[0][0]
 	#Monta o texto da postagem
-	atualizado = lobomensagem.format(pontos) + lista + lobofinal
+	atualizado = lobomensagem.format(pontos, listalobo = lista)
 	#Posta o lobo no grupo
 	if messageid:
 		brinabot.edit_message_text(chat, messageid, atualizado)
@@ -143,8 +137,7 @@ def sorteando_lobo(chat = LOBINDIE):
 	except Exception as Erros:
 		brinabot.send_message(LOGS, Erros)
 	finally:
-		pass
-		#encerra_lobo()
+		encerra_lobo()
 			
 
 def atualiza_pontos_lobo(case, pontos):

@@ -59,6 +59,26 @@ class Modulos:
     			funcao_tenthings()
 modulo = Modulos()
 
+
+def cria_enquete(enquete_text, chat):
+	mensagem = enquete_text.replace("\n\n\n", "\n")
+	mensagem = mensagem.replace("\n\n", "\n")
+	enquetes = mensagem.split("\n/enquete")
+	for enquete in enquetes:
+		mensagem = enquete.replace("/enquete ", "")
+		mensagem = mensagem.split("\n")
+		pergunta = mensagem[0]
+		del(mensagem[0])
+		r = -1
+		for i in mensagem:
+			r += 1
+			for a in i:
+				if  "*" in a:
+					mensagem[r] = mensagem[r].replace("*","")
+					respostaquest = r
+		brinabot.send_poll(chat, pergunta, mensagem, is_anonymous = False, type = 'quiz', correct_option_id = respostaquest)
+	    
+	    
 def call(chatid = False, mensagem = False):
 	sql = "SELECT username FROM membros WHERE username NOT LIKE '%bot%'"
 	membros = executa_query(sql, "select")
