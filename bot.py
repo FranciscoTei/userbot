@@ -23,11 +23,24 @@ import demoji
 	level=logging.ERROR,
 	format='%(asctime)s - %(levelname)s - %(message)s'
 	)"""
-
+def cria_gitignore():
+	# Conteúdo do script para criar o .gitignore
+	conteudo_gitignore = "agenda.db\nlobo_postado.db"
+	
+	# Nome do arquivo .gitignore
+	nome_arquivo_gitignore = ".gitignore"
+	
+	# Abre o arquivo .gitignore em modo de escrita
+	with open(nome_arquivo_gitignore, "w") as arquivo_gitignore:
+	    arquivo_gitignore.write(conteudo_gitignore)
+	
+	print(f"Arquivo {nome_arquivo_gitignore} criado com sucesso!")
+	
+cria_gitignore()
 print("iniciando agora já")
 print("ok")
 
-@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list(".!")))
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list("/.!")))
 def salvar_text(client, message):
 	try:
 		titulo = message.text.removeprefix(".salvar ")
@@ -48,7 +61,7 @@ def salvar_text(client, message):
 def comando_enquete(client, message):
 	cria_enquete(message.text, message.chat.id)
 	
-@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("addlobo", prefixes=list(".!")))
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("addlobo", prefixes=list("/.!")))
 def comando_addlobo(client, message):
 	membro, numero, *fixo = message.text.replace(".addlobo ","").split()
 	casa = confere_casa(numero)
@@ -65,7 +78,7 @@ def comando_addlobo(client, message):
 	except Exception as E:
 		client.send_message(message.chat.id, "Um erro ocorreu: " + E)
 
-@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("reload", prefixes=list(".!")))
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("reload", prefixes=list("/.!")))
 def comando_reload(client, message):
 	sql = "SELECT iduser FROM membros"
 	membros = executa_query(sql, "select")
@@ -127,7 +140,7 @@ def pega_placar(client, message):
 		sql = f"UPDATE textos SET texto = '{placartotal}' WHERE titulo = 'rankingplacar'"
 		executa_query(sql, "update")
 """
-@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("saves", prefixes=list(".!")))
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("saves", prefixes=list("/.!")))
 def comando_saves(client, message):
 	try:
 		sql = "SELECT titulo FROM textos"
@@ -139,7 +152,7 @@ def comando_saves(client, message):
 	except Exception as erro:
 		 client.edit_message_text(message.chat.id, message.id, erro)
 	
-@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("p", prefixes=list(".!")))
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("p", prefixes=list("/.!")))
 def recupera_texto(client, message):
 	try:
 		comando = message.text.split()
@@ -151,7 +164,7 @@ def recupera_texto(client, message):
 	except Exception as erro:
 		 client.edit_message_text(message.chat.id, message.id, erro)
 
-@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sql", prefixes=list(".!")))
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sql", prefixes=list("/.!")))
 def comando_sql(client, message):
 	sql = message.text.replace(".sql ", "")
 	try:
@@ -211,7 +224,7 @@ def sorteia_lobo(client, message):
 		
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("ping"))
 def comando_ping(client, message):
-	client.send_message(message.chat.id, "Pong!")
+	client.send_message(message.chat.id, "Pong!\n<i>version: 12.0</i>")
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlite", prefixes=list(".!")))
 def comando_sqlite(client, message):
@@ -259,7 +272,7 @@ def verifica_lobo_postado():
 			with brinabot:
 				postando_lobo(LOBINDIE)
 
-verifica_lobo_postado()
+#verifica_lobo_postado()
 
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("postapalavra"))
@@ -288,7 +301,6 @@ def envia_lobo(client, message):
     Função para processar mensagens de resposta relacionadas ao jogo "Lobo".
 	"""
 	idmessagelobo, pontos= sqlite.executa("SELECT idmessage, pontos FROM lobo")
-	print(idmessagelobo)
 	
 	if message.reply_to_message.id == idmessagelobo or message.reply_to_message_id == idmessagelobo:
 		sql = f"SELECT * FROM lobo WHERE iduser = {message.from_user.id}"
@@ -453,6 +465,7 @@ def comando_modulos(client, message):
 		executa_query(
 			f"UPDATE modulos SET {comando[1]} = CASE WHEN {comando[1]} = TRUE THEN FALSE ELSE TRUE END WHERE grupoid = {LOBINDIE}", "update"
 		)
+		modulo.atualiza_modulos()
 		client.send_message(message.chat.id, f"O módulo {comando[1]} foi alternado.")
 	else:
 		status = executa_query(
@@ -466,8 +479,7 @@ def comando_modulos(client, message):
 	tenthings: {status["tenthings"]}
 	""".replace("1", "Ativado")
 		client.send_message(message.chat.id, modulos)
-	
-	
+"""
 # Defina o filtro para capturar o evento ChatMemberUpdated
 @brinabot.on_chat_member_updated(filters.chat(LOBINDIE))
 def handle_chat_member_updated(client, update):
@@ -493,10 +505,10 @@ def comando_novos_membros(client, message):
 			if username:
 				executa_query(f"UPDATE membros SET username = '@{membro.username}' WHERE iduser = '{idmembro}'", "update")
 		else:
-			executa_query(f"UPDATE membros SET username = '@{membro.username}' WHERE iduser = '{idmembro}'", "update")
+			executa_query(f"INSERT INTO membros (username,) VALUES@{membro.username}' WHERE iduser = '{idmembro}'", "update")
 			
 		
-	
+"""	
 @brinabot.on_message(filters.poll & filters.chat(int(INDIEMUSIC)))
 def comando_poll_indiemusic(client, message):
 	link_poll = f"<a href='https://t.me/c/{INDIEMUSIC[4:]}/{message.id}'>CLIQUE AQUI</a>"
@@ -582,8 +594,8 @@ def gerenciador():
     	
     elif dia_na_semana == "Saturday":
     	modulo.postar_tenthings(tenthings)
-    	brinabot.send_message(LOBINDIE, "/sabado")
-  
+    	#brinabot.send_message(LOBINDIE, "/sabado")
+
 	
 def sched_erro():
 	brinabot.send_message(TESTES, "Tarefa deu erro")

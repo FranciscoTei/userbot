@@ -27,7 +27,7 @@ class Modulos:
         postar_aniver(funcao_aniver): Publica conteúdo usando a função fornecida se o módulo "aniver" estiver ativado.
         postar_tenthings(funcao_tenthings): Publica conteúdo usando a função fornecida se o módulo "tenthings" estiver ativado.
     """
-    def __init__(self):
+    def atualiza_modulos(self):
         status = executa_query(
         	f"SELECT * FROM modulos WHERE grupoid = '{LOBINDIE}'", "select", True
         )[0]
@@ -58,6 +58,7 @@ class Modulos:
     		if self.tenthings:
     			funcao_tenthings()
 modulo = Modulos()
+modulo.atualiza_modulos()
 
 
 def cria_enquete(enquete_text, chat):
