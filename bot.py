@@ -36,9 +36,11 @@ def cria_gitignore():
 	
 	print(f"Arquivo {nome_arquivo_gitignore} criado com sucesso!")
 	
-cria_gitignore()
+#cria_gitignore()
 print("iniciando agora já")
 print("ok")
+
+
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list("/.!")))
 def salvar_text(client, message):
@@ -452,7 +454,7 @@ def pesquisa_bulas(client, message):
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("eval"))
 def comando_eval(client, message):
 	comando = message.text.replace("/eval ", "")
-	eval(comando)
+	exec(comando)
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("getlog"))
 def get_log(client, message):
