@@ -3,6 +3,7 @@ from time import sleep
 import sqlite3
 import datetime
 import logging
+import re
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from botinit import brinabot, trata_erro
@@ -103,7 +104,6 @@ def tenthings():
 
 	agora = datetime.datetime.now()
 	meio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0)
-
 	brinabot.send_message(LOBINDIE, "/score@TenThings_Bot", schedule_date = meio_dia)
 
 @brinabot.on_message((filters.regex("Daily Scores")))
@@ -115,8 +115,12 @@ def pontua_tenthings(client, message):
 	placar = "placar\n\n"
 	pontos = 40
 	for pontuadores in pontuacao:
-		nomeplacar = pontuadores.split()[1]
-		placar += f"{nomeplacar} {pontos} "
+		nome = pontuadores.split("-")[0]
+		nomecorreto = re.sub(r'[^a-zA-Z\s]', '', nome).strip()
+		if nomecorreto:
+			placar += f"{nomecorreto} {pontos} "
+		else:
+			placar += f"{nome[3:]} {pontos} "
 		if pontos > 20:
 			pontos -= 10
 		elif pontos > 5:
@@ -432,6 +436,7 @@ def add_bulas(client, message):
 		print("oi")
 		bula = demoji.replace(bula, "")
 		executa_query(f"INSERT INTO bulas(nome) VALUES ('{bula.strip()}')", "insert")
+	client.send_message(message.chat.id, "Bulas adicionadas.")
 
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("pesquisar"))

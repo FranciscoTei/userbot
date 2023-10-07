@@ -66,9 +66,9 @@ def comando_formatafilters(client, message):
 	agenda = formata_calendario(True)
 	client.send_message(message.chat.id, agenda)
 	
-@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list(".!")))
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list("/.!")))
 def comando_sqlagenda(client, message):
-	comando = message.text.replace(".sqlagenda ", "")
+	comando = message.text.replace(".sqlagenda ", "").replace("/sqlagenda ", "")
 	try:
 		conn = sqlite3.connect("agenda.db")
 		cursorr = conn.cursor()
@@ -83,11 +83,11 @@ def comando_sqlagenda(client, message):
 			else:
 				message.reply(f"{lista}\n\n<code>{comando}</code>")
 		else:
-		 	conn.commit()	 	
-		 	if message.from_user.id == 886429586:
-		 		client.edit_message_text(message.chat.id, message.id, f"Comando executado com sucesso.\n\n<code>{comando}</code>")
-		 	else:
-		 		message.reply("fComando executado com sucesso.\n\n<code>{comando}</code>")
+			conn.commit()
+			if message.from_user.id == 886429586:
+				client.edit_message_text(message.chat.id, message.id, f"Comando executado com sucesso.\n\n<code>{comando}</code>")
+			else:
+				message.reply(f"Comando executado com sucesso.\n\n<code>{comando}</code>")
 
 		conn.close()
 	except Exception as e:
@@ -158,16 +158,25 @@ def comando_removeagenda(client, message):
 
 	
 def verifica_jogo_existente(cursor, game, semana, hora):
-    cursor.execute("SELECT COUNT(*) FROM agenda WHERE (semana = ? AND jogo = ?) OR (semana = ? AND hora = ?)", (semana, game, semana, '('+hora+')'))
-    count = cursor.fetchone()[0]
-    return count > 0
+    cursor.execute("SELECT COUNT(*) FROM agenda WHERE (semana = ? AND jogo = ? AND fixo IS NULL)", (semana, game))
+    countjogo = cursor.fetchone()[0]
+    if countjogo:
+        conflito = "jogo"
+        return conflito
+    else:
+        cursor.execute("SELECT COUNT(*) FROM agenda WHERE (semana = ? AND hora = ? AND fixo IS NULL)", (semana, '('+hora+')'))
+        counthora = cursor.fetchone()[0]
+        if counthora:
+            conflito = "hora"
+            return conflito
+    return False
    
 def verifica_jogo_vazio(cursor, semana, hora):
     cursor.execute("SELECT COUNT(*) FROM agenda WHERE (semana = ? AND jogo = 'Vazio' AND hora = ?)", (semana, '('+hora+')'))
     count = cursor.fetchone()[0]
     return count > 0
-   
-   
+
+
 def salva_agenda(agenda):
 	
 	conn = sqlite3.connect('agenda.db')
@@ -207,23 +216,23 @@ def salva_agenda(agenda):
 				for nome_correto in all_jogos:
 					if is_input_accepted(nome_do_jogo, nome_correto[0]):
 						nome_do_jogo = nome_correto[0]
-				
-				if not verifica_jogo_existente(cursor, nome_do_jogo, dia_semana, hora):
+				conflito = verifica_jogo_existente(cursor, nome_do_jogo, dia_semana, hora)
+				if verifica_jogo_vazio(cursor, dia_semana, hora):
+					sql = f"UPDATE agenda SET jogo = '{nome_do_jogo}' WHERE semana = '{dia_semana}' AND hora = '({hora})'"
+					cursor.execute(sql)
+					conn.commit()				
+				elif conflito == "jogo":
+					jogos_errados += f"{nome_do_jogo} já foi agendado {dia_semana.capitalize()}\n"
+				elif conflito == "hora":
+					jogos_errados += f"{dia_semana.capitalize()} {hora} não está disponível\n"
+				elif not conflito:
 					sql = f"INSERT INTO agenda(aplicador, jogo, semana, hora) VALUES ('{aplicador}', '{nome_do_jogo}', '{dia_semana}', '({hora})')"
 					cursor.execute(sql)
 					conn.commit()
-				elif verifica_jogo_vazio(cursor, dia_semana, hora):
-					sql = f"UPDATE agenda SET jogo = '{nome_do_jogo}' WHERE semana = '{dia_semana}' AND hora = '({hora})'"
-					cursor.execute(sql)
-					conn.commit()
 				else:
-					jogos_errados += f"{dia_semana} {hora} não está disponível\n"
-	#brinabot.send_message(STAFF, jogos_errados)
-					
-		#aplicador_definido= False
+					pass
 	conn.close()
 	return jogos_errados
-#salva_agenda(agenda)
 
 def formata_agenda(camps = False):
 	conn = sqlite3.connect('agenda.db')
@@ -243,7 +252,7 @@ def formata_agenda(camps = False):
 	]
 	i = 0
 	for dia in dias_da_semana:
-		sql = f"SELECT * FROM agenda WHERE semana = '{dia}' ORDER BY hora"
+		sql = f"SELECT * FROM agenda WHERE semana = '{dia}' ORDER BY hora, fixo DESC"
 		cursor.execute(sql)
 		jogos = cursor.fetchall()
 		agenda += f"\n<b>{dia} ({dias_na_semana[i]})</b>\n"
