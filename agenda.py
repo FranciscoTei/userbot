@@ -29,14 +29,22 @@ def comando_addemoji(client, message):
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagenda"))
 def comando_formataagenda(client, message):
 	agenda = formata_agenda()
-	agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
-	client.edit_message_text(message.chat.id, 41297, agenda)
+	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
+	if message.chat.id == STAFF:
+		client.edit_message_text(message.chat.id, 41297, agenda)
+		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = 41297)
+	else:
+		client.send_message(message.chat.id, agenda)
 	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
 	agenda = formata_agenda(True)
-	agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
-	client.edit_message_text(message.chat.id, 41297, agenda)
+	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
+	if message.chat.id == STAFF:
+		client.edit_message_text(message.chat.id, 41297, agenda)
+		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = 41297)
+	else:
+		client.send_message(message.chat.id, agenda)
 	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vcalendario"))
 def comando_formatacalendario(client, message):

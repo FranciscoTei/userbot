@@ -455,7 +455,7 @@ def pesquisa_bulas(client, message):
 def comando_eval(client, message):
 	comando = message.text.replace("/eval ", "")
 	exec(comando)
-
+	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("getlog"))
 def get_log(client, message):
 	brinabot.send_document(message.chat.id, "erros.txt")
