@@ -37,7 +37,7 @@ def cria_gitignore():
 	print(f"Arquivo {nome_arquivo_gitignore} criado com sucesso!")
 	
 #cria_gitignore()
-print("iniciando agora já")
+print("iniciando agora")
 print("ok")
 
 
