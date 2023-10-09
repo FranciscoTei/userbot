@@ -32,7 +32,7 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 		"select",
 	)[0][0]
 	#Monta o texto da postagem
-	atualizado = lobomensagem.format(pontos, listalobo = lista)
+	atualizado = lobomensagem.format(pontos, lista = lista)
 	#Posta o lobo no grupo
 	if messageid:
 		brinabot.edit_message_text(chat, messageid, atualizado)
