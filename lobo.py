@@ -48,7 +48,6 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 def confere_casa(numero):
 	print(numero)
 	casa = sqlite.executa(f"SELECT casa FROM casas WHERE numero = {numero}")
-
 	return casa[0]
 	
 def atualiza_lobo(chat, messageid = False):
