@@ -18,26 +18,14 @@ from lobo import postando_lobo, sorteando_lobo, confere_casa
 from info import *
 from agenda import *
 import demoji
+from dl_videos import *
 
 """logging.basicConfig(
 	filename='erros.log', 
 	level=logging.ERROR,
 	format='%(asctime)s - %(levelname)s - %(message)s'
 	)"""
-def cria_gitignore():
-	# Conteúdo do script para criar o .gitignore
-	conteudo_gitignore = "agenda.db\nlobo_postado.db"
-	
-	# Nome do arquivo .gitignore
-	nome_arquivo_gitignore = ".gitignore"
-	
-	# Abre o arquivo .gitignore em modo de escrita
-	with open(nome_arquivo_gitignore, "w") as arquivo_gitignore:
-	    arquivo_gitignore.write(conteudo_gitignore)
-	
-	print(f"Arquivo {nome_arquivo_gitignore} criado com sucesso!")
-	
-#cria_gitignore()
+
 print("iniciando agora")
 print("ok")
 
@@ -288,6 +276,19 @@ def posta_palavra(client, message):
 	else:
 		postando_palavra_secreta(message.chat.id)
 		client.delete_messages(message.chat.id, message.id)
+
+@brinabot.on_message(filters.bot & filters.regex(r'\b(?:SEGUNDA|TERÇA|QUARTA|QUINTA|SEXTA|SÁBADO|DOMINGO)\b'))
+def fixa_saves(client, message):
+	infodata = DateTimeInfo()
+	if (infodata.hora == 0 and infodata.minuto < 2):
+		brinabot.pin_chat_message(message.chat.id, message.id)
+	
+	
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("testeps"))
+def comando_testeps(client, message):
+	palavras = '{"palavra1": "dica1", "palavra2": "dica2", "palavra3": "dica3", "palavra4": "dica4", "palavra5": "dica5"}'
+	sql = f"INSERT INTO palavra_teste(idmessage, tema, palavras) VALUES ({message.id}, 'palavras', '{palavras}')"
+	executa_query(sql, "insert")
 
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("validarpalavra"))

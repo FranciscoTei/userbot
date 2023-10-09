@@ -29,6 +29,7 @@ def postando_palavra_secreta(chat = LOBINDIE):
 	
 	#transformando em dict e depois string para salvar no banco de dados
 	ps.palavras = {subtupla[1]: subtupla[2] for subtupla in palavras}
+	print(ps.palavras)
 	palavrasecreta = str(ps.palavras).replace("'",'"')
 	executa_query(f"INSERT INTO palavra_teste (tema, palavras) VALUES ('{tema[0]}','{palavrasecreta}')", "insert")
 	
@@ -46,13 +47,12 @@ def postando_palavra_secreta(chat = LOBINDIE):
 		)
 	)
 	brinabot.pin_chat_message(chat, message.id)
-	
+
 	#salvando o id da postagem para futuras edições
 	infodata = DateTimeInfo()
 	sql = f"UPDATE palavra_teste SET idmessage = {message.id}, status = 1, Data = '{infodata.hoje}' ORDER BY id DESC LIMIT 1;"
 	executa_query(sql, "update")
 	return ps.palavras
-	
 
 def palavra_secreta(usuario, chute, messageid, chat = LOBINDIE):
 	"""
@@ -235,7 +235,8 @@ def verifica_palavra_postado(chat = LOBINDIE):
 
 	"""
 	# obtém o nome do dia da semana correspondente ao número
-	if infodata.semana in ('Tuesday', 'Thursday', 'Wednesday'):
+	infodata = DateTimeInfo()
+	if infodata.semana in ('Tuesday', 'Thursday'):
 		comando = "SELECT data, status FROM palavra_teste ORDER BY id DESC LIMIT 1;"
 		infops = executa_query(comando, "select")[0]
 		diapalavra = infops[0].strftime("%Y-%m-%d")
@@ -258,6 +259,10 @@ class PalavraSecreta:
     def update_palavras(self):
         self.palavras = verifica_palavra_postado()
         return self.palavras
+    def force_update(self):
+        sql = f"SELECT palavras FROM palavra_teste ORDER BY id DESC LIMIT 1"
+        ps.palavras = json.loads(executa_query(sql, "select")[0][0])
+        
 ps = PalavraSecreta()
 ps.update_palavras()
 #palavras_secretas = verifica_palavra_postado()

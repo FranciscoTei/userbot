@@ -28,7 +28,7 @@ def comando_addemoji(client, message):
 
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagenda"))
 def comando_formataagenda(client, message):
-	agenda = formata_agenda()
+	agenda = "/personal agenda\n\n" + formata_agenda()
 	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
 	if message.chat.id == STAFF:
 		client.edit_message_text(message.chat.id, 41297, agenda)
@@ -63,8 +63,7 @@ def comando_salvaagenda(client, message):
 		
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("filters"))
 def comando_formatafilters(client, message):
-	agenda = formata_calendario(True)
-	client.send_message(message.chat.id, agenda)
+	formata_calendario(True)
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list("/.!")))
 def comando_sqlagenda(client, message):
@@ -315,11 +314,14 @@ def formata_calendario(saves = False):
 				emoji = f"{emoji[0]}"
 			elif jogo[2] == "Campeonato de Zumbi":
 				emoji = "🧟‍♂"
+			elif "Quiz" in jogo[2]:
+				emoji = "❓"
 			else:
 				emoji = "⚠️"
 			agenda += f"{emoji} {jogo[2]} {jogo[4]}\n"
 		if saves:
-			brinabot.send_message(STAFF,  "/personal " + dia + "\n" + agenda)
+			diasave = dia[:-6] if len(dia) > 7 else dia
+			brinabot.send_message(TESTES,  "/personal " + diasave.lower() + "\n" + agenda)
 			agenda = ""
 	conn.close()
 	return agenda

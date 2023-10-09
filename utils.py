@@ -142,6 +142,7 @@ class DateTimeInfo:
         self.mes = dt.month
         self.dia = dt.day
         self.hora = dt.hour
+        self.minuto = dt.minute
         self.semana = dt.strftime('%A')
 infodata = DateTimeInfo()
 
