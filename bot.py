@@ -6,7 +6,7 @@ import re
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from botinit import *
-from pyrogram import filters, compose
+from pyrogram import filters
 from pyrogram.types import ChatPermissions
 from pyrogram import raw
 
@@ -462,10 +462,10 @@ def comando_eval(client, message):
 	exec(comando)
 	
 	
-@botreserva.on_message(filters.user(AUTORIZADOS) & filters.command("eval"))
+"""@botreserva.on_message(filters.user(AUTORIZADOS) & filters.command("eval"))
 def comando_eval_bot(client, message):
 	comando = message.text.replace("/eval ", "")
-	exec(comando)
+	exec(comando)"""
 	
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("getlog"))
@@ -635,4 +635,4 @@ except Exception as E:
 sched.start()
 
 print("fibalizado")
-compose(apps)
+brinabot.run()

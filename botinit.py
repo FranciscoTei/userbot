@@ -9,11 +9,11 @@ def get_bot():
 
 try:
     brinabot = get_bot()
-    botreserva = Client('bot', API_ID, API_HASH, bot_token="5218571852:AAGfoUCEezSTx0Hs1DisIqZhyOWTzZ8mZrU")
-    apps = [
-        brinabot,
-        botreserva
-    ]
+    #botreserva = Client('bot', API_ID, API_HASH, bot_token="5218571852:AAGfoUCEezSTx0Hs1DisIqZhyOWTzZ8mZrU")
+    #apps = [
+        #brinabot,
+        #botreserva
+    #]
 except Exception as e:
 	print(e)
 """
