@@ -3,7 +3,7 @@ from pyrogram import Client
 from info import *
 
 def get_bot():
-	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="1234")
+	#bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="1234")
 	return bot
 
 try:
