@@ -3,11 +3,12 @@ import yt_dlp
 from botinit import brinabot
 from pyrogram import filters
 from info import AUTORIZADOS, TITULAR
-
+print("oii")
 counter = 0
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("dl"))
 def get_text_messages(client, message):
     message.text = message.text.replace("/dl ", "")
+    print("oi")
     if message.text:
         global counter
         counter += 1
@@ -29,7 +30,7 @@ def get_text_messages(client, message):
                 brinabot.edit_messagext(message.chat.id, messageid, "Não foi possível baixar.")
             brinabot.edit_message_text(message.chat.id, messageid, "video baixado")
             brinabot.edit_message_text(message.chat.id, messageid, 'enviando.')
-            brinabot.delete_message(message.chat.id, messageid)
+            brinabot.delete_messages(message.chat.id, messageid)
             brinabot.send_video(message.chat.id, video=open('video{}.mp4'.format(current_counter), 'rb'))
 
             remove('video{}.mp4'.format(current_counter))

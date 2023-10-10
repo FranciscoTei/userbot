@@ -2,12 +2,11 @@
 from time import sleep
 import sqlite3
 import datetime
-import logging
 import re
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from botinit import brinabot, trata_erro
-from pyrogram import filters
+from botinit import *
+from pyrogram import filters, compose
 from pyrogram.types import ChatPermissions
 from pyrogram import raw
 
@@ -20,7 +19,7 @@ from agenda import *
 import demoji
 from dl_videos import *
 
-"""logging.basicConfig(
+"""logg		ing.basicConfig(
 	filename='erros.log', 
 	level=logging.ERROR,
 	format='%(asctime)s - %(levelname)s - %(message)s'
@@ -283,7 +282,7 @@ def fixa_saves(client, message):
 	if (infodata.hora == 0 and infodata.minuto < 2):
 		brinabot.pin_chat_message(message.chat.id, message.id)
 	
-	
+
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("testeps"))
 def comando_testeps(client, message):
 	palavras = '{"palavra1": "dica1", "palavra2": "dica2", "palavra3": "dica3", "palavra4": "dica4", "palavra5": "dica5"}'
@@ -462,6 +461,13 @@ def comando_eval(client, message):
 	comando = message.text.replace("/eval ", "")
 	exec(comando)
 	
+	
+@botreserva.on_message(filters.user(AUTORIZADOS) & filters.command("eval"))
+def comando_eval_bot(client, message):
+	comando = message.text.replace("/eval ", "")
+	exec(comando)
+	
+
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("getlog"))
 def get_log(client, message):
 	brinabot.send_document(message.chat.id, "erros.txt")
@@ -570,7 +576,7 @@ def posta_indiemusic():
 	brinabot.copy_message(INDIECANAL, IMAGENS, 6)
 
 def encerra_indiemusic():
-	brinabot.copy_message(INDIECANAL, TESTES, 7)
+	brinabot.copy_message(INDIECANAL, IMAGENS, 7)
 
 #modulo.postar_lobo()
 def gerenciador():
@@ -629,4 +635,4 @@ except Exception as E:
 sched.start()
 
 print("fibalizado")
-brinabot.run()
+compose(apps)
