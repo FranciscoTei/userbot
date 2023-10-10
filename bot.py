@@ -19,7 +19,7 @@ from agenda import *
 import demoji
 from dl_videos import *
 
-"""logg		ing.basicConfig(
+"""logging.basicConfig(
 	filename='erros.log', 
 	level=logging.ERROR,
 	format='%(asctime)s - %(levelname)s - %(message)s'
