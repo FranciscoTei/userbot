@@ -27,6 +27,9 @@ class Modulos:
         postar_aniver(funcao_aniver): Publica conteúdo usando a função fornecida se o módulo "aniver" estiver ativado.
         postar_tenthings(funcao_tenthings): Publica conteúdo usando a função fornecida se o módulo "tenthings" estiver ativado.
     """
+    def __init__(self):
+    	self.atualiza_modulos()
+    	
     def atualiza_modulos(self):
         status = executa_query(
         	f"SELECT * FROM modulos WHERE grupoid = '{LOBINDIE}'", "select", True
@@ -119,9 +122,9 @@ def placar_quiz(resultado, client):
 	
 #soma 
 def soma(placar):
-	soma = placar.split()
+	soma_placar = placar.split()
 	resultado = 0
-	for num in soma:
+	for num in soma_placar:
 		if num.isdigit():
 			resultado += int(num)
 	return resultado
@@ -136,6 +139,9 @@ class DateTimeInfo:
     Classe para obter informações de data e hora, incluindo o fuso horário de Brasília.
     """
     def __init__(self):
+        self.atualizar_informacoes()
+        
+    def atualizar_informacoes(self):
         dt = datetime.datetime.now(tz)
         self.hoje = dt.strftime("%Y-%m-%d")
         self.ano = dt.year
@@ -144,11 +150,14 @@ class DateTimeInfo:
         self.hora = dt.hour
         self.minuto = dt.minute
         self.semana = dt.strftime('%A')
+        
 infodata = DateTimeInfo()
 
 def atualizar_membros():
-    sql = "SELECT iduser, nomeuser FROM membros"
-    membros = executa_query(sql, "select")
+    membros = executa_query(
+        "SELECT iduser, nomeuser FROM membros",
+        "select"
+    )
     dict_membros = {iduser: nome for iduser, nome in membros}
     return dict_membros
 # Executa a função de atualização dos membros uma vez ao iniciar o bot

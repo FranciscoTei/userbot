@@ -29,7 +29,6 @@ def postando_palavra_secreta(chat = LOBINDIE):
 	
 	#transformando em dict e depois string para salvar no banco de dados
 	ps.palavras = {subtupla[1]: subtupla[2] for subtupla in palavras}
-	print(ps.palavras)
 	palavrasecreta = str(ps.palavras).replace("'",'"')
 	executa_query(f"INSERT INTO palavra_teste (tema, palavras) VALUES ('{tema[0]}','{palavrasecreta}')", "insert")
 	
@@ -86,30 +85,37 @@ Parabéns, você ganhou 10 pontos! 🤑""",
 
 	#recuperando nome do usuario
 	nome_membro=membroslb.dict.get(usuario.id, usuario.first_name)
-
-			
+	print("palavra secreta: ", palavra_secreta)
 	#trabalhando vencedores
 	vencedoreslista = palavrasecreta["vencedores"].split(" - ") if palavrasecreta["vencedores"] else []
+	print("vencedores lista: ", vencedoreslista)
 	vencedoreslista.append(nome_membro)
+	print("vencedores lista atualizada: ", vencedoreslista)
 	vencedores, _= formata_vencedores(vencedoreslista)
+	print("vencedores lista formatada: ", vencedores)
 
 	
 	#tranalhando acertadas
 	acertadas = f"{palavrasecreta['acertadas']} - {chute}" if palavrasecreta["acertadas"] else chute
+	print("acertadas lista: ", acertadas)
 
 	#trabalhando palavras
 	ps.palavras.pop(chute)
+	print(ps.palavras)
 		
 	#trabalhando dicas
 	if palavrasecreta["status"] == 1:
 		dicas = " "
 	else:
-		dicas = ', '.join(ps.palavras.values()) if len(ps.palavras) > 1 else next(iter(ps.palavras.values()))
+		print("começa dicas")
+		dicas = ', '.join(ps.palavras.values()) if len(ps.palavras) > 0 else " " #next(iter(ps.palavras.values()))
+		print("termina dicas")
+	
 
 	#buscanco o texto da postagem
 	sql = "SELECT texto FROM textos WHERE titulo = 'palavrasecreta'"
 	textopalavrasecreta = executa_query(sql, "select")[0]
-			
+	print(textopalavrasecreta)
 	# Atualiza a mensagem no Telegram
 	brinabot.edit_message_text(
 		chat,

@@ -23,12 +23,25 @@ from dl_videos import *
 	filename='erros.log', 
 	level=logging.ERROR,
 	format='%(asctime)s - %(levelname)s - %(message)s'
-	)"""
+	)""" 
+
 
 print("iniciando agora")
 print("ok")
 
-
+@brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("buscaplacar", prefixes=list("/.!")))
+def busca_placar(client, message):
+	formato = "%Y-%m-%d %H:%M:%S"
+	data= datetime.strptime(message.text.replace("/buscaplacar ", ""), formato)
+	messages = brinabot.search_messages(-1001572420135, "placar")
+	placar = "/rank "
+	print("funcionando")
+	#data = datetime(2023, 10, 8, 17, 10, 22)
+	for messagebusca in messages:
+		if messagebusca.date > data:
+			print()
+			placar += messagebusca.text + "\n"
+	client.send_message(message.chat.id, placar)
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list("/.!")))
 def salvar_text(client, message):
@@ -88,14 +101,13 @@ def tenthings():
 	regras10things = brinabot.copy_message(LOBINDIE, IMAGENS, 3)
 	brinabot.pin_chat_message(LOBINDIE, regras10things.id)
 	brinabot.copy_message(LOBINDIE, IMAGENS, 4)
-
-	agora = datetime.datetime.now()
+	agora = datetime.datetime.now(tz)
 	meio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0)
 	brinabot.send_message(LOBINDIE, "/score@TenThings_Bot", schedule_date = meio_dia)
 
 @brinabot.on_message((filters.regex("Daily Scores")))
 def pontua_tenthings(client, message):
-	infodata = DateTimeInfo()
+	infodata.atualizar_informacoes()
 	if infodata.hora != 12:
 		return
 	pontuacao = message.text.split("\n")[1:]
@@ -278,7 +290,7 @@ def posta_palavra(client, message):
 
 @brinabot.on_message(filters.bot & filters.regex(r'\b(?:SEGUNDA|TERÇA|QUARTA|QUINTA|SEXTA|SÁBADO|DOMINGO)\b'))
 def fixa_saves(client, message):
-	infodata = DateTimeInfo()
+	infodata.atualizar_informacoes()
 	if (infodata.hora == 0 and infodata.minuto < 2):
 		brinabot.pin_chat_message(message.chat.id, message.id)
 	
@@ -286,9 +298,11 @@ def fixa_saves(client, message):
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("testeps"))
 def comando_testeps(client, message):
 	palavras = '{"palavra1": "dica1", "palavra2": "dica2", "palavra3": "dica3", "palavra4": "dica4", "palavra5": "dica5"}'
-	sql = f"INSERT INTO palavra_teste(idmessage, tema, palavras) VALUES ({message.id}, 'palavras', '{palavras}')"
+	#palavras = '{"palavra5": "dica5"}'
+	infodata.atualizar_informacoes()
+	sql = f"INSERT INTO palavra_teste(idmessage, tema, palavras, Data) VALUES ({message.id}, 'palavras', '{palavras}', '{infodata.hoje}')"
 	executa_query(sql, "insert")
-
+	ps.force_update()
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("validarpalavra"))
 def comando_validar_palavra(client, message):
