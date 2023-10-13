@@ -35,14 +35,18 @@ def comando_formataagenda(client, message):
 		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = 41297)
 	else:
 		client.send_message(message.chat.id, agenda)
-	
+
+idmessageagenda = 0
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
+	global idmessageagenda
 	agenda = formata_agenda(True)
 	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
-	if message.chat.id == STAFF:
-		client.edit_message_text(message.chat.id, 41297, agenda)
-		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = 41297)
+	if message.chat.id == STAFF and idmessageagenda:
+		client.edit_message_text(message.chat.id, idmessageagenda, agenda)
+		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = idmessageagenda)
+	elif message.chat.id == STAFF:
+		idmessageagenda = client.edit_message_text(message.chat.id, message.id, agenda).id
 	else:
 		client.send_message(message.chat.id, agenda)
 	

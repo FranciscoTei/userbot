@@ -28,8 +28,8 @@ class Modulos:
         postar_tenthings(funcao_tenthings): Publica conteúdo usando a função fornecida se o módulo "tenthings" estiver ativado.
     """
     def __init__(self):
-    	self.atualiza_modulos()
-    	
+        self.atualiza_modulos()
+ 
     def atualiza_modulos(self):
         status = executa_query(
         	f"SELECT * FROM modulos WHERE grupoid = '{LOBINDIE}'", "select", True
@@ -140,7 +140,7 @@ class DateTimeInfo:
     """
     def __init__(self):
         self.atualizar_informacoes()
-        
+
     def atualizar_informacoes(self):
         dt = datetime.datetime.now(tz)
         self.hoje = dt.strftime("%Y-%m-%d")
@@ -150,7 +150,7 @@ class DateTimeInfo:
         self.hora = dt.hour
         self.minuto = dt.minute
         self.semana = dt.strftime('%A')
-        
+
 infodata = DateTimeInfo()
 
 def atualizar_membros():
