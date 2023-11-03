@@ -18,28 +18,19 @@ from info import *
 from agenda import *
 import demoji
 from dl_videos import *
-
-"""logging.basicConfig(
-	filename='erros.log', 
-	level=logging.ERROR,
-	format='%(asctime)s - %(levelname)s - %(message)s'
-	)""" 
+from rich.traceback import install
+install()
 
 
-print("iniciando agora")
-print("ok")
-
+	    
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("buscaplacar", prefixes=list("/.!")))
 def busca_placar(client, message):
 	formato = "%Y-%m-%d %H:%M:%S"
 	data= datetime.strptime(message.text.replace("/buscaplacar ", ""), formato)
 	messages = brinabot.search_messages(-1001572420135, "placar")
 	placar = "/rank "
-	print("funcionando")
-	#data = datetime(2023, 10, 8, 17, 10, 22)
 	for messagebusca in messages:
 		if messagebusca.date > data:
-			print()
 			placar += messagebusca.text + "\n"
 	client.send_message(message.chat.id, placar)
 
@@ -63,6 +54,7 @@ def salvar_text(client, message):
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("enquete"))
 def comando_enquete(client, message):
 	cria_enquete(message.text, message.chat.id)
+
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("addlobo", prefixes=list("/.!")))
 def comando_addlobo(client, message):
@@ -127,6 +119,7 @@ def pontua_tenthings(client, message):
 	brinabot.send_message(STAFF, placar)
 	brinabot.ban_chat_member(LOBINDIE, "@TenThings_Bot")
 	brinabot.unban_chat_member(LOBINDIE, "@TenThings_Bot")
+
 
 """
 @brinabot.on_message(filters.chat(staff) & (filters.regex("placar") | filters.regex("Placar")))
@@ -197,6 +190,7 @@ def call_jogo(client, message):
 	mensagem = message.text.replace("/call", "")
 	modulo.call = True
 	call(message.chat.id, mensagem = mensagem)
+
 
 @brinabot.on_message(filters.me & filters.command("soma"))
 def comando_soma(client, message):
@@ -314,14 +308,15 @@ def comando_validar_palavra(client, message):
 	else:
 		chute = conferir_chute(message.reply_to_message.text, ps.palavras)
 		palavra_secreta(message.reply_to_message.from_user, chute, message.reply_to_message.id, message.chat.id)
-	
+
+
 @brinabot.on_message(filters.reply & filters.chat(LOBINDIE) & filters.text)
 def envia_lobo(client, message):
 	"""
     Função para processar mensagens de resposta relacionadas ao jogo "Lobo".
 	"""
 	idmessagelobo, pontos= sqlite.executa("SELECT idmessage, pontos FROM lobo")
-	
+	print(idmessagelobo)
 	if message.reply_to_message.id == idmessagelobo or message.reply_to_message_id == idmessagelobo:
 		sql = f"SELECT * FROM lobo WHERE iduser = {message.from_user.id}"
 		membrosalvo = executa_query(sql, "select")
@@ -329,7 +324,9 @@ def envia_lobo(client, message):
 		username = "@"+message.from_user.username if message.from_user.username else " "
 
 		nome_membro = membroslb.dict.get(message.from_user.id, message.from_user.first_name)
+
 		if not membrosalvo:
+			print("membrosalvo")
 			executa_query(
 				f"INSERT INTO lobo (iduser, nomeuser, numero, casa, username) VALUES ('{message.from_user.id}', '{nome_membro}', {message.text}, '{casa}', '{username}')",
 				"insert"
@@ -344,25 +341,32 @@ def envia_lobo(client, message):
 	
 	# Conferindo se o usuário chutou uma palavra secreta
 	else:
+		print("else")
 		if message.text and len(message.text) < 80 and ps.palavras:
 			chute = conferir_chute(message.text, ps.palavras)
+			print(chute)
 			if chute:
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
 
-"""
+
 @brinabot.on_message(filters.me & filters.command("reloadlobo"))
 def reload_lobo(client, message):
 	pass
 	
-def reloaded():
+"""def reloaded():
 	idmessagelobo = sqlite.executa("SELECT idmessage FROM lobo")
 	for message in brinabot.get_discussion_replies(LOBINDIE, idmessagelobo[0]):
-		print(message)
-		envia_lobo(brinabot, message)
-
-with brinabot:
-	reloaded()
-"""
+		casa = confere_casa(message.text)
+		fixo = 0
+		try:
+			usuarioid = message.from_user.id
+			usuarionome = message.from_user.first_name
+			username = "@"+message.from_user.username or ""
+			membronome = dict_membros.get(usuarioid, usuarionome)
+			sql = f"INSERT INTO lobo (iduser, nomeuser, numero, casa, username) VALUES ('{usuarioid}', '{membronome}', {message.text}, '{casa}', '{username}')"
+			executa_query(sql, "insert")
+		except:
+			print("deu erro")"""
 		
 @brinabot.on_message(filters.reply & filters.chat(LOBINDIE))
 def atualiza_palavra(client, message):

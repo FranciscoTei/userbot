@@ -1,1 +1,63 @@
-python-3.10.8
+import pymysql
+import pyrogram
+
+
+
+class DataBaseSQL:
+    def __init__(self, host, user, password, database):
+        self.con = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database
+        )
+
+    def executa(self, query):
+        try:
+            with self.con as con:
+                cursor = con.cursor()
+                cursor.execute(query)
+                resultado = cursor.fetchone()
+        except pymysql.Error as error:
+            return error
+        return resultado
+
+    def executamany(self, query, quant):
+        try:
+            with self.con as con:
+                cursor = con.cursor()
+                cursor.execute(query)
+                resultado = cursor.fetchmany(quant)
+        except pymysql.Error as error:
+            return error
+        return resultado
+
+    def executaall(self, query):
+        try:
+            with self.con as con:
+                cursor = con.cursor()
+                cursor.execute(query)
+                resultado = cursor.fetchall()
+        except pymysql.Error as error:
+            return error
+        return resultado
+
+    def update(self, query):
+        try:
+            with self.con as con:
+                cursor = con.cursor()
+                cursor.execute(query)
+                con.commit()
+        except pymysql.Error as error:
+            return error
+        return True
+
+    def delete(self, query):
+        try:
+            with self.con as con:
+                cursor = con.cursor()
+                cursor.execute(query)
+                con.commit()
+        except pymysql.Error as error:
+            return error
+        return True

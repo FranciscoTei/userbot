@@ -82,7 +82,7 @@ def cria_enquete(enquete_text, chat):
 					respostaquest = r
 		brinabot.send_poll(chat, pergunta, mensagem, is_anonymous = False, type = 'quiz', correct_option_id = respostaquest)
 	    
-	    
+
 def call(chatid = False, mensagem = False):
 	sql = "SELECT username FROM membros WHERE username NOT LIKE '%bot%'"
 	membros = executa_query(sql, "select")
@@ -182,6 +182,7 @@ dict_membros = atualizar_membros()
 def conferir_chute(chute, palavras):
 	for palavra in palavras:
 		if unidecode(palavra.lower()).replace("-"," ") in unidecode(chute.lower()).replace("-"," ") :
+			print(palavra)
 			return palavra
 	return False
 	
