@@ -4,7 +4,7 @@ from info import *
 
 
 def get_bot():
-	bot = Client('brinabot', API_ID, API_HASH, phone_number=NUMBER, password="chicobalofo")
+	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")
 	return bot
 
 try:
