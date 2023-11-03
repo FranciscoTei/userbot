@@ -11,3 +11,5 @@ pymysql==1.0.2
 apscheduler==3.9.1
 Unidecode==1.3.6
 yt-dlp
+rich
+icecream
