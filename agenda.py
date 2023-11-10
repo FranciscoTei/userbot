@@ -36,7 +36,7 @@ def comando_formataagenda(client, message):
 	else:
 		client.send_message(message.chat.id, agenda)
 
-idmessageagenda = 0
+idmessageagenda = 43166
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
 	global idmessageagenda
