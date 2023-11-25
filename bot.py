@@ -22,6 +22,15 @@ from rich.traceback import install
 install()
 
 
+@brinabot.on_message(filters.chat(LOBINDIE) & filters.inline_keyboard & filters.user(1903115246))
+def save_commans(client, message):
+    print("oi")
+    for button in message.reply_markup.inline_keyboard:
+        if button[1].text == "Todos 👥":
+            brinabot.request_callback_answer(lobindie, message.id, button[1].callback_data)
+
+        elif button[1].text == "Salvar ✔️":
+        	brinabot.request_callback_answer(lobindie, message.id, button[1].callback_data)
 	    
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("buscaplacar", prefixes=list("/.!")))
 def busca_placar(client, message):

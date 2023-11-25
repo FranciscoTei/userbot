@@ -101,8 +101,9 @@ def placar_quiz(resultado, client):
 	linhas = resultado.splitlines()[4:-2]  # Remove the first two lines
 	placar = ""
 	for linha in linhas:
-		_, jogador, _, pontos, *_ = linha.split(" ")
-		pontos = int(pontos) * 3
+		jogador, pontos = linha.split(" – ")
+		jogador = jogador.split()[-1]
+		pontos = int(pontos.split()[0]) * 3
 		if jogador.startswith("@"):
 			try:
 				time.sleep(0.2)
