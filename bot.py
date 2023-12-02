@@ -27,10 +27,10 @@ def save_commans(client, message):
     print("oi")
     for button in message.reply_markup.inline_keyboard:
         if button[1].text == "Todos 👥":
-            brinabot.request_callback_answer(lobindie, message.id, button[1].callback_data)
+            brinabot.request_callback_answer(LOBINDIE, message.id, button[1].callback_data)
 
         elif button[1].text == "Salvar ✔️":
-        	brinabot.request_callback_answer(lobindie, message.id, button[1].callback_data)
+        	brinabot.request_callback_answer(LOBINDIE, message.id, button[1].callback_data)
 	    
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("buscaplacar", prefixes=list("/.!")))
 def busca_placar(client, message):
@@ -42,6 +42,7 @@ def busca_placar(client, message):
 		if messagebusca.date > data:
 			placar += messagebusca.text + "\n"
 	client.send_message(message.chat.id, placar)
+
 
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("salvar", prefixes=list("/.!")))
 def salvar_text(client, message):
@@ -324,7 +325,9 @@ def envia_lobo(client, message):
 	"""
     Função para processar mensagens de resposta relacionadas ao jogo "Lobo".
 	"""
-	idmessagelobo, pontos= sqlite.executa("SELECT idmessage, pontos FROM lobo")
+	#idmessagelobo, pontos= sqlite.executa("SELECT idmessage, pontos FROM lobo")
+	pontos = int(executa_query("SELECT valor FROM valores WHERE nome = 'pontoslobo'", "select")[0][0])
+	idmessagelobo = int(executa_query("SELECT valor FROM valores WHERE nome = 'lobomessageid'", "select")[0][0])
 	print(idmessagelobo)
 	if message.reply_to_message.id == idmessagelobo or message.reply_to_message_id == idmessagelobo:
 		sql = f"SELECT * FROM lobo WHERE iduser = {message.from_user.id}"

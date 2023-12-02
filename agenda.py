@@ -1,6 +1,7 @@
 from info import *
 from pyrogram import filters
 from botinit import brinabot
+from database import executa_query
 
 import sqlite3
 import demoji
@@ -36,17 +37,22 @@ def comando_formataagenda(client, message):
 	else:
 		client.send_message(message.chat.id, agenda)
 
-idmessageagenda = 43822
+idmessageagenda = 0
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
 	global idmessageagenda
+	idmessageagenda = int(executa_query("SELECT valor FROM valores WHERE id = 2", "select")[0][0])
+	print(type(idmessageagenda))
 	agenda = formata_agenda(True)
+	print(agenda)
 	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
 	if message.chat.id == STAFF and idmessageagenda:
 		client.edit_message_text(message.chat.id, idmessageagenda, agenda)
 		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = idmessageagenda)
 	elif message.chat.id == STAFF:
 		idmessageagenda = client.edit_message_text(message.chat.id, message.id, agenda).id
+		executa_query("UPDATE valores SET valor = {idmessageagenda} WHERE id = 2", "update")
+		print(idmessageagenda)
 	else:
 		client.send_message(message.chat.id, agenda)
 	
@@ -57,17 +63,23 @@ def comando_formatacalendario(client, message):
 
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("agenda"))
 def comando_salvaagenda(client, message):
+	global idmessageagenda
 	jogos = message.text.replace("/agenda", "")
 	if jogos:
 		resultado = salva_agenda(jogos)
 		if len(resultado) < 20:
-			client.send_message(message.chat.id, "Jogos agendados com sucesso.")
+			client.send_message(message.chat.id, "Jogos agendados com sucesso.", reply_to_message_id = idmessageagenda)
 		else:
 			client.send_message(message.chat.id, resultado)
-		
+
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("filters"))
 def comando_formatafilters(client, message):
 	formata_calendario(True)
+
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("horarios"))
+def comando_horarios(client, message):
+	horarios = horas_disponiveis()
+	client.send_message(message.chat.id, horarios)
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list("/.!")))
 def comando_sqlagenda(client, message):
@@ -96,7 +108,9 @@ def comando_sqlagenda(client, message):
 	except Exception as e:
 		 client.edit_message_text(message.chat.id, message.id, e)
 		 
+
 		 
+		 		 		 
 def formata_dias():
 	data_atual = datetime.now()	
 	# Encontrar o próximo dia da semana (segunda-feira)
@@ -114,6 +128,7 @@ def formata_dias():
 dias_na_semana = formata_dias()
 
 
+	
 # Conectar ao banco de dados (criará um arquivo de banco de dados chamado 'agenda.db' se não existir)
 #conn = sqlite3.connect('agenda.db')
 
@@ -197,17 +212,21 @@ def salva_agenda(agenda):
 		aplicador_definido = False
 		for jogo in jogos:
 			if not aplicador_definido:
-				aplicador = jogo.split(" ")[-1][:-1].capitalize()
+				aplicador = jogo.split(" ")[-1].replace(":", "").capitalize()
 				aplicador_definido  = True
 				jogos_errados += f"❌ Erro ao agendar\n\n"
 			else:
-				dados_do_jogo = jogo.split(" - ",1)
-				dia_semana, hora = dados_do_jogo[0].split(" ")
-				if len(dados_do_jogo) > 1:
-					nome_do_jogo = demoji.replace(dados_do_jogo[1], "").strip()
-					nome_do_jogo = nome_do_jogo[0].upper() + nome_do_jogo[1:].lower()
-				else:
-					nome_do_jogo = "Vazio"
+				try: 
+					dados_do_jogo = jogo.split(" - ",1)
+					dia_semana, hora = dados_do_jogo[0].split(" ")
+					if len(dados_do_jogo) > 1:
+						nome_do_jogo = demoji.replace(dados_do_jogo[1], "").strip()
+						nome_do_jogo = nome_do_jogo[0].upper() + nome_do_jogo[1:].lower()
+					else:
+						nome_do_jogo = "Vazio"
+				except Exception as Error:
+					jogos_errados += f"Erro de formatação em {jogo}"
+					return jogos_errados
 				
 				# Formata nome do dia da semana
 				if not dia_semana.lower() in ("sábado, sabado, domingo"):
@@ -236,15 +255,8 @@ def salva_agenda(agenda):
 					pass
 	conn.close()
 	return jogos_errados
-
-def formata_agenda(camps = False):
-	conn = sqlite3.connect('agenda.db')
-
-# Criar um cursor para executar comandos SQL
-	cursor = conn.cursor()
-	agenda = "<b>AGENDA SEMANAL</b> 🗓\n"
 	
-	dias_da_semana = [
+dias_da_semana = [
 	    "SEGUNDA-FEIRA",
 	    "TERÇA-FEIRA",
 	    "QUARTA-FEIRA",
@@ -252,7 +264,48 @@ def formata_agenda(camps = False):
 	    "SEXTA-FEIRA",
 	    "SÁBADO",
 	    "DOMINGO"
-	]
+]
+
+def horas_disponiveis():
+	conn = sqlite3.connect('agenda.db')
+# Criar um cursor para executar comandos SQL
+	cursor = conn.cursor()
+	
+	cursor.execute("SELECT semana, hora FROM agenda WHERE jogo != 'Jogo do lobo'")
+	jogos = cursor.fetchall()
+	disponiveis = "✳️ Horários disponíveis"
+	ocupado = 0
+	teste = 0
+	for dia in dias_da_semana:
+		disponiveis += f"\n\n• {dia}\n\n"
+		for hora in range(13, 24):
+			for jogo in jogos:
+				#print(jogo[3], jogo[4][1:3])
+				try:
+					if jogo[0] == dia and int(jogo[1][1:3]) == hora:
+						ocupado = 1
+						if teste:
+							disponiveis =disponiveis[:-1] + "jogo rapido até 1h\n"
+							teste = 0
+						print(jogo[2])
+						break #print("match")
+				except:
+					pass
+			if not ocupado:
+				disponiveis += f"➱ {hora}h - \n"
+				teste = 1
+				
+			ocupado = 0
+	conn.close()
+	return disponiveis
+	
+def formata_agenda(camps = False):
+	conn = sqlite3.connect('agenda.db')
+
+# Criar um cursor para executar comandos SQL
+	cursor = conn.cursor()
+	agenda = "<b>AGENDA SEMANAL</b> 🗓\n"
+	
 	i = 0
 	for dia in dias_da_semana:
 		sql = f"SELECT * FROM agenda WHERE semana = '{dia}' ORDER BY hora, fixo DESC"

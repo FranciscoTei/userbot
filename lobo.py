@@ -18,7 +18,9 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 	"""
 	
 		# Obtém o id da imagem atual e a quantidade de pontos atual
-	pontos, idfoto = sqlite.executa("SELECT pontos, idfoto FROM lobo WHERE IR = 1")
+	#pontos, idfoto = sqlite.executa("SELECT pontos, idfoto FROM lobo WHERE IR = 1")
+	pontos = int(executa_query("SELECT valor FROM valores WHERE nome = 'pontoslobo'", "select")[0][0])
+	print(pontos)
 	
 	#Monta a lista de membros e numeros escolhidos
 	sql = "SELECT nomeuser, numero FROM lobo"
@@ -40,7 +42,9 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 		messageid = brinabot.copy_message(chat, IMAGENS, 5, atualizado).id
 		# insere a data na tabela lobo
 		hoje = DateTimeInfo()
-		sqlite.update(f"UPDATE lobo SET data='{hoje}', idmessage = {messageid}")
+		#sqlite.update(f"UPDATE lobo SET data='{hoje}', idmessage = {messageid}")
+		executa_query(f"UPDATE valores SET valor = '{hoje}' WHERE nome = 'datalobo'", "update")
+		executa_query(f"UPDATE valores SET valor = {messageid} WHERE nome = 'lobomessageid'", "update")
 	#Fixa a postagem
 	brinabot.pin_chat_message(chat, messageid)
 	
@@ -95,7 +99,8 @@ def sorteando_lobo(chat = LOBINDIE):
         None
 	"""
 	sorteado = random.randint(0,99)
-	brinabot.send_message(chat, f"❗️<b>Número sorteado:</b> <code>{sorteado}</code>")
+	idmessage = int(executa_query("SELECT valor FROM valores WHERE nome = 'lobomessageid'", "select")[0][0])
+	brinabot.send_message(chat, f"❗️<b>Número sorteado:</b> <code>{sorteado}</code>", reply_to_message_id = idmessage)
 	message = brinabot.send_message(chat, "<b>Procurando ganhadores.</b>")
 	for i in (2,3):
 		time.sleep(1)
@@ -105,7 +110,9 @@ def sorteando_lobo(chat = LOBINDIE):
 	casa = confere_casa(sorteado)
 	ganhadorcasa = executa_query(f"SELECT iduser, nomeuser, username FROM lobo WHERE casa = '{casa}'", "select")
 
-	pontos, idmessage = sqlite.executa("SELECT pontos, idmessage FROM lobo")
+	#pontos, idmessage = sqlite.executa("SELECT pontos, idmessage FROM lobo")
+	pontos = int(executa_query("SELECT valor FROM valores WHERE nome = 'pontoslobo'", "select")[0][0])
+	#idmessage = int(executa_query("SELECT valor FROM valores WHERE nome = 'lobomessageid'", "select"))
 	brinabot.unpin_chat_message(chat, idmessage)
 	
 	try:
@@ -141,12 +148,14 @@ def sorteando_lobo(chat = LOBINDIE):
 
 def atualiza_pontos_lobo(case, pontos):
 	novapontuacao = [pontos + 5, 5]
-	sqlite.executa(f"UPDATE lobo SET pontos = {novapontuacao[case]}")
-	
+	#sqlite.executa(f"UPDATE lobo SET pontos = {novapontuacao[case]}")
+	executa_query(f"UPDATE valores SET valor = {novapontuacao[case]} WHERE nome = 'pontoslobo'", "update")
+
 	
 def encerra_lobo():
 	executa_query("DELETE FROM lobo WHERE fixo = 0", "delete")
-	sqlite.update("UPDATE lobo SET idmessage = 0")
+	#sqlite.update("UPDATE lobo SET idmessage = 0")
+	executa_query("UPDATE valores SET valor = 0 WHERE nome = 'lobomessageid'", "update")
 
 if __name__ == "__main__":
 	with brinabot:
