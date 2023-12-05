@@ -7,15 +7,12 @@ def get_bot():
 	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")
 	return bot
 
-try:
-    brinabot = get_bot()
+brinabot = get_bot()
     #botreserva = Client('bot', API_ID, API_HASH, bot_token="5218571852:AAGfoUCEezSTx0Hs1DisIqZhyOWTzZ8mZrU")
     #apps = [
         #brinabot,
         #botreserva
     #]
-except Exception as e:
-	print(e)
 """
 with brinabot:
 	try:
