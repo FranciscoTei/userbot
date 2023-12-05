@@ -51,7 +51,7 @@ def comando_visualizaagenda(client, message):
 		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = idmessageagenda)
 	elif message.chat.id == STAFF:
 		idmessageagenda = client.edit_message_text(message.chat.id, message.id, agenda).id
-		executa_query("UPDATE valores SET valor = {idmessageagenda} WHERE id = 2", "update")
+		executa_query(f"UPDATE valores SET valor = {idmessageagenda} WHERE id = 2", "update")
 		print(idmessageagenda)
 	else:
 		client.send_message(message.chat.id, agenda)
