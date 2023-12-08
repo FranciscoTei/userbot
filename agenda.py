@@ -33,7 +33,6 @@ def comando_formataagenda(client, message):
 	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
 	if message.chat.id == STAFF:
 		client.edit_message_text(message.chat.id, 41297, agenda)
-		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = 41297)
 	else:
 		client.send_message(message.chat.id, agenda)
 
@@ -42,13 +41,10 @@ idmessageagenda = 0
 def comando_visualizaagenda(client, message):
 	global idmessageagenda
 	idmessageagenda = int(executa_query("SELECT valor FROM valores WHERE id = 2", "select")[0][0])
-	print(type(idmessageagenda))
 	agenda = formata_agenda(True)
-	print(agenda)
 	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
 	if message.chat.id == STAFF and idmessageagenda:
 		client.edit_message_text(message.chat.id, idmessageagenda, agenda)
-		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = idmessageagenda)
 	elif message.chat.id == STAFF:
 		idmessageagenda = client.edit_message_text(message.chat.id, message.id, agenda).id
 		executa_query(f"UPDATE valores SET valor = {idmessageagenda} WHERE id = 2", "update")
@@ -68,7 +64,8 @@ def comando_salvaagenda(client, message):
 	if jogos:
 		resultado = salva_agenda(jogos)
 		if len(resultado) < 20:
-			client.send_message(message.chat.id, "Jogos agendados com sucesso.", reply_to_message_id = idmessageagenda)
+			agenda = formata_agenda(True)
+			client.edit_message_text(message.chat.id, idmessageagenda, agenda)
 		else:
 			client.send_message(message.chat.id, resultado)
 
@@ -79,7 +76,8 @@ def comando_formatafilters(client, message):
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("horarios"))
 def comando_horarios(client, message):
 	horarios = horas_disponiveis()
-	client.send_message(message.chat.id, horarios)
+	if message.reply_to_message:
+		client.send_message(message.chat.id, horarios)
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list("/.!")))
 def comando_sqlagenda(client, message):

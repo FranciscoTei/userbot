@@ -3,11 +3,24 @@ from pyrogram import Client
 from info import *
 
 
-def get_bot():
-	bot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")
-	return bot
 
-brinabot = get_bot()
+app = Client(
+    "log-bot",
+    api_hash=API_HASH,
+    api_id=API_ID,
+    bot_token = "1058043234:AAHPFOzDytDQ3aLEnhyJKnLnFlrico6mInU"
+)
+try:
+	brinabot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")
+except Exception as e:
+	with app:
+		app.send_message(LOGS, f"Erro ao iniciar brinabot: {e}")
+		
+apps = [
+        brinabot,
+        app
+    ]
+
     #botreserva = Client('bot', API_ID, API_HASH, bot_token="5218571852:AAGfoUCEezSTx0Hs1DisIqZhyOWTzZ8mZrU")
     #apps = [
         #brinabot,

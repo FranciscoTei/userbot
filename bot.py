@@ -6,7 +6,7 @@ import re
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from botinit import *
-from pyrogram import filters
+from pyrogram import filters, compose
 from pyrogram.types import ChatPermissions
 from pyrogram import raw
 
@@ -21,6 +21,52 @@ from dl_videos import *
 from rich.traceback import install
 install()
 
+import logging
+import traceback
+
+class ErrorLogger:
+    def __init__(self):
+        self.error_list = []
+
+    def add_error(self, error_msg):
+        self.error_list.append(error_msg)
+    
+    def send_errors(self):
+    	if self.error_list:
+    		for msg_erro in self.error_list:
+    			app.send_message(-1002019305196, msg_erro)
+    		self.error_list = []
+
+
+error_logger = ErrorLogger()
+
+class Filtro(logging.Filter):
+    def filter(self, record):
+        if record.levelno >= logging.ERROR:
+            # Apenas mensagens de nível ERROR ou superior passarão pelo filtro
+            #erro = f"```python\n{record.msg}\n```"
+            traceback_str = traceback.format_exc()
+            hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            erro = f"```python\n{hora} - {DONO}\n{traceback_str}\n```"
+            error_logger.add_error(erro)
+            return True # Retorna False para excluir a mensagem do log
+        return False
+
+
+# Configurar o FileHandler
+file_handler = logging.FileHandler("logs.txt", "w")
+file_handler.addFilter(Filtro())
+
+# Configurar o logger com ambos os handlers
+logging.basicConfig(handlers=[file_handler], level=logging.ERROR)
+
+logging.getLogger().setLevel(logging.ERROR)
+
+with app:
+	try:
+		print(2/0)
+	except Exception:
+		logging.error("bot iniciado")
 
 @brinabot.on_message(filters.chat(LOBINDIE) & filters.inline_keyboard & filters.user(1903115246))
 def save_commans(client, message):
@@ -31,7 +77,7 @@ def save_commans(client, message):
 
         elif button[1].text == "Salvar ✔️":
         	brinabot.request_callback_answer(LOBINDIE, message.id, button[1].callback_data)
-	    
+    
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("buscaplacar", prefixes=list("/.!")))
 def busca_placar(client, message):
 	formato = "%Y-%m-%d %H:%M:%S"
@@ -491,7 +537,6 @@ def comando_eval(client, message):
 	comando = message.text.replace("/eval ", "")
 	exec(comando)
 	
-	
 """@botreserva.on_message(filters.user(AUTORIZADOS) & filters.command("eval"))
 def comando_eval_bot(client, message):
 	comando = message.text.replace("/eval ", "")
@@ -656,6 +701,9 @@ try:
 	sched.add_job(posta_indiemusic, 'cron', day_of_week= 'mon', hour = '08')
 	
 	sched.add_job(gerenciador,'cron', day_of_week= '0-6', hour = '00', minute = '00')
+
+	sched.add_job(error_logger.send_errors, 'interval', minutes=1)
+
 except Exception as E:
 	with brinabot:
 		brinabot.send_message(LOGS, E)
@@ -665,4 +713,5 @@ except Exception as E:
 sched.start()
 
 print("fibalizado")
-brinabot.run()
+#brinabot.run()
+compose(apps)
