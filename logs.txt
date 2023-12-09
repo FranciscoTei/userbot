@@ -1,4 +1,4 @@
-ERROR:root:teste
+ERROR:root:bot iniciado
 ERROR:pyrogram.dispatcher:division by zero
 Traceback (most recent call last):
   File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/dispatcher.py", line 242, in handler_worker

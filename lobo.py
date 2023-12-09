@@ -5,7 +5,9 @@ from database import executa_query, sqlite
 from info import *
 from utils import DateTimeInfo, format_titles_and_links
 
-
+def printerro():
+	print(2/0)
+	
 def postando_lobo(chat = LOBINDIE, messageid = False):
 	"""
     Envia a postagem do jogo "Lobo" no grupo, exibindo os números dos membros fixos.

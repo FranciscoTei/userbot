@@ -5,10 +5,10 @@ from info import *
 
 
 app = Client(
-    "log-bot",
+    "wordle-bot",
     api_hash=API_HASH,
     api_id=API_ID,
-    bot_token = "1058043234:AAHPFOzDytDQ3aLEnhyJKnLnFlrico6mInU"
+    bot_token = "5218571852:AAGfoUCEezSTx0Hs1DisIqZhyOWTzZ8mZrU"
 )
 try:
 	brinabot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")

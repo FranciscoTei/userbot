@@ -13,7 +13,7 @@ from pyrogram import raw
 from database import executa_query, sqlite
 from utils import *
 from palavrasecreta import *
-from lobo import postando_lobo, sorteando_lobo, confere_casa
+from lobo import postando_lobo, sorteando_lobo, confere_casa, printerro
 from info import *
 from agenda import *
 import demoji
