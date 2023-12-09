@@ -32,24 +32,33 @@ def comando_formataagenda(client, message):
 	agenda = "/personal agenda\n\n" + formata_agenda()
 	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
 	if message.chat.id == STAFF:
-		client.edit_message_text(message.chat.id, 41297, agenda)
+		client.edit_message_text(message.chat.id, idmessageagenda, agenda)
+		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = idmessageagenda)
 	else:
 		client.send_message(message.chat.id, agenda)
 
-idmessageagenda = 0
+idmessageagenda = int(executa_query("SELECT valor FROM valores WHERE id = 2", "select")[0][0])
+
+@brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("resetagenda"))
+def comando_visualizaagenda(client, message):
+	idmessageagenda = 0
+	executa_query(f"UPDATE valores SET valor = {idmessageagenda} WHERE id = 2", "update")
+	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
 def comando_visualizaagenda(client, message):
 	global idmessageagenda
-	idmessageagenda = int(executa_query("SELECT valor FROM valores WHERE id = 2", "select")[0][0])
+
 	agenda = formata_agenda(True)
 	#agenda = agenda.replace("<b>SEXTA-FEIRA (06/10)</b>" , "<b>SEXTA-FEIRA (06/10)</b> - DIA TEMÁTICO DA DISNEY")
 	if message.chat.id == STAFF and idmessageagenda:
 		client.edit_message_text(message.chat.id, idmessageagenda, agenda)
+		client.send_message(message.chat.id, "Agenda atualizada", reply_to_message_id = idmessageagenda)
 	elif message.chat.id == STAFF:
-		idmessageagenda = client.edit_message_text(message.chat.id, message.id, agenda).id
+		print("salvando id")
+		idmessageagenda = client.send_message(message.chat.id, message.id, agenda).id
 		executa_query(f"UPDATE valores SET valor = {idmessageagenda} WHERE id = 2", "update")
-		print(idmessageagenda)
 	else:
+		print("nao salvou")
 		client.send_message(message.chat.id, agenda)
 	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vcalendario"))
@@ -66,6 +75,8 @@ def comando_salvaagenda(client, message):
 		if len(resultado) < 20:
 			agenda = formata_agenda(True)
 			client.edit_message_text(message.chat.id, idmessageagenda, agenda)
+			client.send_message(message.chat.id, "Jogos agendados com sucesso.", reply_to_message_id = idmessageagenda)
+
 		else:
 			client.send_message(message.chat.id, resultado)
 
@@ -77,7 +88,9 @@ def comando_formatafilters(client, message):
 def comando_horarios(client, message):
 	horarios = horas_disponiveis()
 	if message.reply_to_message:
-		client.send_message(message.chat.id, horarios)
+		client.edit_message_text(message.chat.id, message.reply_to_message.id, horarios)
+		return
+	client.send_message(message.chat.id, horarios)
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlagenda", prefixes=list("/.!")))
 def comando_sqlagenda(client, message):

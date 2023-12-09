@@ -1,10 +1,1 @@
 ERROR:root:bot iniciado
-ERROR:pyrogram.dispatcher:division by zero
-Traceback (most recent call last):
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/dispatcher.py", line 242, in handler_worker
-    await self.loop.run_in_executor(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/thread.py", line 52, in run
-    result = self.fn(*self.args, **self.kwargs)
-  File "<string>", line 538, in comando_eval
-  File "<string>", line 1, in <module>
-ZeroDivisionError: division by zero
