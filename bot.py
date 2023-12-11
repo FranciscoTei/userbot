@@ -38,7 +38,7 @@ class ErrorLogger:
     			app.send_message(-1002019305196, msg_erro)
     		self.error_list = []
 
-
+print("funcionando")
 
 error_logger = ErrorLogger()
 
