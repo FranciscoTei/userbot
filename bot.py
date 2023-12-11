@@ -53,9 +53,6 @@ class Filtro(logging.Filter):
             error_logger.add_error(erro)
             return True # Retorna False para excluir a mensagem do log
         return False
-
-with brinabot:
-	brinabot.edit_message_media(LOBINDIE, 8136775, InputMediaPhoto("AgACAgEAAx0ESJOFOgACM45ldq0Ectl4SfRrPms_nEeNPDn2wAACMKsxG0ncmEc2DJpY10c6kwAIAQADAgADbQAHHgQ"))
 	
 # Configurar o FileHandler
 file_handler = logging.FileHandler("logs.txt", "w")
