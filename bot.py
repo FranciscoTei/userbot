@@ -712,7 +712,12 @@ except Exception as E:
 #sched.add_job(postando_lobo,'interval', minutes = 5)
 #sched.add_job(sorteando_lobo,'interval', minutes = 1)
 sched.start()
+import sys
 
 print("fibalizado")
 #brinabot.run()
-compose(apps)
+try:
+	compose(apps)
+except:
+	sys.exit()
+	
