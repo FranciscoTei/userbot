@@ -13,7 +13,7 @@ app = Client(
     bot_token = TOKEN
 )
 try:
-	brinabot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")
+	#brinabot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")
 except Exception as e:
 	with app:
 		app.send_message(-1002019305196, f"Erro ao iniciar brinabot: {e}")
