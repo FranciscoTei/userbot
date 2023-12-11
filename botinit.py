@@ -1,6 +1,8 @@
 # inicializacao do bot
 from pyrogram import Client
 from info import *
+import sys
+
 
 
 
@@ -14,7 +16,8 @@ try:
 	brinabot = Client('brinabot', API_ID, API_HASH, session_string=SESSION, phone_number=NUMBER, password="chicobalofo")
 except Exception as e:
 	with app:
-		app.send_message(LOGS, f"Erro ao iniciar brinabot: {e}")
+		app.send_message(-1002019305196, f"Erro ao iniciar brinabot: {e}")
+		sys.exit()
 		
 apps = [
         brinabot,
