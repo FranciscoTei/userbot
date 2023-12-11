@@ -3,3 +3,5 @@ bot.session
 erros.txt
 erros.log
 tests
+wordle-bot.session
+logs.txt
