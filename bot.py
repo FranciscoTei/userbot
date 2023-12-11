@@ -23,6 +23,7 @@ install()
 
 import logging
 import traceback
+from pyrogram.types import InputMediaPhoto
 
 class ErrorLogger:
     def __init__(self):
@@ -36,6 +37,7 @@ class ErrorLogger:
     		for msg_erro in self.error_list:
     			app.send_message(-1002019305196, msg_erro)
     		self.error_list = []
+
 
 
 error_logger = ErrorLogger()
@@ -52,7 +54,9 @@ class Filtro(logging.Filter):
             return True # Retorna False para excluir a mensagem do log
         return False
 
-
+with brinabot:
+	brinabot.edit_message_media(LOBINDIE, 8136775, InputMediaPhoto("AgACAgEAAx0ESJOFOgACM45ldq0Ectl4SfRrPms_nEeNPDn2wAACMKsxG0ncmEc2DJpY10c6kwAIAQADAgADbQAHHgQ"))
+	
 # Configurar o FileHandler
 file_handler = logging.FileHandler("logs.txt", "w")
 file_handler.addFilter(Filtro())
