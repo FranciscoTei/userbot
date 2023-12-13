@@ -1,76 +1,30 @@
 ERROR:root:bot iniciado
-ERROR:pyrogram.dispatcher:Telegram says: [403 MESSAGE_AUTHOR_REQUIRED] - You are not the author of this message (caused by "messages.EditMessage")
+ERROR:apscheduler.executors.default:Job "gerenciador (trigger: cron[day_of_week='0-6', hour='0', minute='0'], next run at: 2023-12-13 00:00:00 -03)" raised an exception
 Traceback (most recent call last):
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/dispatcher.py", line 242, in handler_worker
-    await self.loop.run_in_executor(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/thread.py", line 52, in run
-    result = self.fn(*self.args, **self.kwargs)
-  File "<string>", line 540, in comando_eval
-  File "<string>", line 1, in <module>
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/sync.py", line 78, in async_to_sync_wrap
-    return asyncio.run_coroutine_threadsafe(coroutine, main_loop).result()
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/_base.py", line 445, in result
-    return self.__get_result()
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/_base.py", line 390, in __get_result
-    raise self._exception
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/methods/messages/edit_message_media.py", line 270, in edit_message_media
-    r = await self.invoke(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/methods/advanced/invoke.py", line 79, in invoke
-    r = await self.session.invoke(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/session/session.py", line 389, in invoke
-    return await self.send(query, timeout=timeout)
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/session/session.py", line 357, in send
-    RPCError.raise_it(result, type(data))
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/errors/rpc_error.py", line 91, in raise_it
-    raise getattr(
-pyrogram.errors.exceptions.forbidden_403.MessageAuthorRequired: Telegram says: [403 MESSAGE_AUTHOR_REQUIRED] - You are not the author of this message (caused by "messages.EditMessage")
-ERROR:pyrogram.dispatcher:Telegram says: [403 MESSAGE_AUTHOR_REQUIRED] - You are not the author of this message (caused by "messages.EditMessage")
+  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pymysql/connections.py", line 756, in _write_bytes
+    self._sock.sendall(data)
+ConnectionAbortedError: [Errno 103] Software caused connection abort
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/dispatcher.py", line 242, in handler_worker
-    await self.loop.run_in_executor(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/thread.py", line 52, in run
-    result = self.fn(*self.args, **self.kwargs)
-  File "<string>", line 540, in comando_eval
-  File "<string>", line 1, in <module>
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/sync.py", line 78, in async_to_sync_wrap
-    return asyncio.run_coroutine_threadsafe(coroutine, main_loop).result()
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/_base.py", line 445, in result
-    return self.__get_result()
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/_base.py", line 390, in __get_result
-    raise self._exception
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/methods/messages/edit_message_media.py", line 270, in edit_message_media
-    r = await self.invoke(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/methods/advanced/invoke.py", line 79, in invoke
-    r = await self.session.invoke(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/session/session.py", line 389, in invoke
-    return await self.send(query, timeout=timeout)
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/session/session.py", line 357, in send
-    RPCError.raise_it(result, type(data))
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/errors/rpc_error.py", line 91, in raise_it
-    raise getattr(
-pyrogram.errors.exceptions.forbidden_403.MessageAuthorRequired: Telegram says: [403 MESSAGE_AUTHOR_REQUIRED] - You are not the author of this message (caused by "messages.EditMessage")
-ERROR:pyrogram.dispatcher:Telegram says: [400 MESSAGE_ID_INVALID] - The message id is invalid (caused by "messages.EditMessage")
-Traceback (most recent call last):
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/dispatcher.py", line 242, in handler_worker
-    await self.loop.run_in_executor(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/thread.py", line 52, in run
-    result = self.fn(*self.args, **self.kwargs)
-  File "<string>", line 540, in comando_eval
-  File "<string>", line 1, in <module>
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/sync.py", line 78, in async_to_sync_wrap
-    return asyncio.run_coroutine_threadsafe(coroutine, main_loop).result()
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/_base.py", line 445, in result
-    return self.__get_result()
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/concurrent/futures/_base.py", line 390, in __get_result
-    raise self._exception
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/methods/messages/edit_message_media.py", line 270, in edit_message_media
-    r = await self.invoke(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/methods/advanced/invoke.py", line 79, in invoke
-    r = await self.session.invoke(
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/session/session.py", line 389, in invoke
-    return await self.send(query, timeout=timeout)
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/session/session.py", line 357, in send
-    RPCError.raise_it(result, type(data))
-  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pyrogram/errors/rpc_error.py", line 91, in raise_it
-    raise getattr(
-pyrogram.errors.exceptions.bad_request_400.MessageIdInvalid: Telegram says: [400 MESSAGE_ID_INVALID] - The message id is invalid (caused by "messages.EditMessage")
+  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/apscheduler/executors/base.py", line 125, in run_job
+    retval = job.func(*job.args, **job.kwargs)
+  File "<string>", line 669, in gerenciador
+  File "/storage/emulated/0/htdocs/suporte/userbot/utils.py", line 50, in postar_ps
+    funcao_ps()
+  File "/storage/emulated/0/htdocs/suporte/userbot/palavrasecreta.py", line 22, in postando_palavra_secreta
+    tema = executa_query('SELECT tema FROM palavra_secreta WHERE postado = (SELECT MIN(postado) FROM palavra_secreta) ORDER BY RAND () LIMIT 1', 'select')[0]
+  File "/storage/emulated/0/htdocs/suporte/userbot/database.py", line 15, in executa_query
+    cursor.execute(query)
+  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pymysql/connections.py", line 547, in query
+    self._execute_command(COMMAND.COM_QUERY, sql)
+  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pymysql/connections.py", line 814, in _execute_command
+    self._write_bytes(packet)
+  File "/data/user/0/ru.iiec.pydroid3/files/arm-linux-androideabi/lib/python3.9/site-packages/pymysql/connections.py", line 759, in _write_bytes
+    raise err.OperationalError(
+pymysql.err.OperationalError: (2006, "MySQL server has gone away (ConnectionAbortedError(103, 'Software caused connection abort'))")

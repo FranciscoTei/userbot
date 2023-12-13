@@ -13,7 +13,7 @@ from pyrogram import raw
 from database import executa_query, sqlite
 from utils import *
 from palavrasecreta import *
-from lobo import postando_lobo, sorteando_lobo, confere_casa, printerro
+from lobo import postando_lobo, sorteando_lobo, confere_casa
 from info import *
 from agenda import *
 import demoji
@@ -23,7 +23,6 @@ install()
 
 import logging
 import traceback
-from pyrogram.types import InputMediaPhoto
 
 class ErrorLogger:
     def __init__(self):
@@ -45,13 +44,12 @@ error_logger = ErrorLogger()
 class Filtro(logging.Filter):
     def filter(self, record):
         if record.levelno >= logging.ERROR:
-            # Apenas mensagens de nível ERROR ou superior passarão pelo filtro
-            #erro = f"```python\n{record.msg}\n```"
+
             traceback_str = traceback.format_exc()
             hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             erro = f"```python\n{hora} - {DONO}\n{traceback_str}\n```"
             error_logger.add_error(erro)
-            return True # Retorna False para excluir a mensagem do log
+            return True
         return False
 	
 # Configurar o FileHandler
@@ -712,12 +710,8 @@ except Exception as E:
 #sched.add_job(postando_lobo,'interval', minutes = 5)
 #sched.add_job(sorteando_lobo,'interval', minutes = 1)
 sched.start()
-import sys
 
 print("fibalizado")
 #brinabot.run()
-try:
-	compose(apps)
-except:
-	sys.exit()
+compose(apps)
 	
