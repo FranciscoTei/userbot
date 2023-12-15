@@ -39,7 +39,7 @@ def postando_lobo(chat = LOBINDIE, messageid = False):
 	if messageid:
 		brinabot.edit_message_text(chat, messageid, atualizado)
 	else:
-		messageid = brinabot.copy_message(chat, IMAGENS, 5, atualizado).id
+		messageid = brinabot.copy_message(chat, IMAGENS, 9, atualizado).id
 		# insere a data na tabela lobo
 		hoje = DateTimeInfo()
 		#sqlite.update(f"UPDATE lobo SET data='{hoje}', idmessage = {messageid}")

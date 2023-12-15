@@ -278,7 +278,7 @@ def sorteia_lobo(client, message):
 		
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("ping"))
 def comando_ping(client, message):
-	client.send_message(message.chat.id, "Pong!\n<i>version: 12.5</i>")
+	client.send_message(message.chat.id, "Pong!\n<i>version: 15</i>")
 	
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlite", prefixes=list(".!")))
 def comando_sqlite(client, message):
