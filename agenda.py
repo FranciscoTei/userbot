@@ -45,7 +45,7 @@ def comando_visualizaagenda(client, message):
 	executa_query(f"UPDATE valores SET valor = {idmessageagenda} WHERE id = 2", "update")
 	
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("vagendac"))
-def comando_visualizaagenda(client, message):
+def comando_visualizaagendacomcampeonato(client, message):
 	global idmessageagenda
 
 	agenda = formata_agenda(True)
