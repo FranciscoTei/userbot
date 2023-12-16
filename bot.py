@@ -142,7 +142,7 @@ def comando_reload(client, message):
 		except Exception as E:
 			time.sleep(1)
 	client.send_message(message.chat.id, "Usernames atualizados.")
-	
+print("oi")
 def tenthings():
 	brinabot.add_chat_members(LOBINDIE, "@TenThings_Bot")
 	regras10things = brinabot.copy_message(LOBINDIE, IMAGENS, 3)
