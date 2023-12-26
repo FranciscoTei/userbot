@@ -25,17 +25,17 @@ import logging
 import traceback
 
 class ErrorLogger:
-    def __init__(self):
-        self.error_list = []
+	def __init__(self):
+		self.error_list = []
 
-    def add_error(self, error_msg):
-        self.error_list.append(error_msg)
-    
-    def send_errors(self):
-    	if self.error_list:
-    		for msg_erro in self.error_list:
-    			app.send_message(-1002019305196, msg_erro)
-    		self.error_list = []
+	def add_error(self, error_msg):
+		self.error_list.append(error_msg)
+
+	def send_errors(self):
+		if self.error_list:
+			for msg_erro in self.error_list:
+				app.send_message(-1002019305196, msg_erro)
+			self.error_list = []
 
 print("funcionando")
 
@@ -56,8 +56,11 @@ class Filtro(logging.Filter):
 file_handler = logging.FileHandler("logs.txt", "w")
 file_handler.addFilter(Filtro())
 
+stream_handler = logging.StreamHandler()
+
+
 # Configurar o logger com ambos os handlers
-logging.basicConfig(handlers=[file_handler], level=logging.ERROR)
+logging.basicConfig(handlers=[file_handler, stream_handler], level=logging.ERROR)
 
 logging.getLogger().setLevel(logging.ERROR)
 
@@ -69,13 +72,14 @@ with app:
 
 @brinabot.on_message(filters.chat(LOBINDIE) & filters.inline_keyboard & filters.user(1903115246))
 def save_commans(client, message):
-    print("oi")
-    for button in message.reply_markup.inline_keyboard:
-        if button[1].text == "Todos 👥":
-            brinabot.request_callback_answer(LOBINDIE, message.id, button[1].callback_data)
+	for button in message.reply_markup.inline_keyboard:
+		if len(button) != 2:
+			return
+		if button[1].text == "Todos 👥":
+			brinabot.request_callback_answer(LOBINDIE, message.id, button[1].callback_data)
 
-        elif button[1].text == "Salvar ✔️":
-        	brinabot.request_callback_answer(LOBINDIE, message.id, button[1].callback_data)
+		elif button[1].text == "Salvar ✔️":
+			brinabot.request_callback_answer(LOBINDIE, message.id, button[1].callback_data)
     
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("buscaplacar", prefixes=list("/.!")))
 def busca_placar(client, message):
@@ -142,7 +146,8 @@ def comando_reload(client, message):
 		except Exception as E:
 			time.sleep(1)
 	client.send_message(message.chat.id, "Usernames atualizados.")
-print("oi")
+
+
 def tenthings():
 	brinabot.add_chat_members(LOBINDIE, "@TenThings_Bot")
 	regras10things = brinabot.copy_message(LOBINDIE, IMAGENS, 3)
@@ -176,23 +181,6 @@ def pontua_tenthings(client, message):
 	brinabot.unban_chat_member(LOBINDIE, "@TenThings_Bot")
 
 
-"""
-@brinabot.on_message(filters.chat(staff) & (filters.regex("placar") | filters.regex("Placar")))
-def pega_placar(client, message):
-	texto = message.text.lower()
-	print(texto)
-	if texto.startswith("placar"):
-		print("oi")
-		placar = message.text.split("\n")[1:]
-		placar = "\n".join(placar)
-		sql = "SELECT texto FROM textos WHERE titulo = 'rankingplacar'"
-		placartotal = executa_query(sql,"select")[0][0]
-		print(placartotal)
-		placartotal += f"{placar}\n"
-		client.edit_message_text(ranking, 654587, placartotal)
-		sql = f"UPDATE textos SET texto = '{placartotal}' WHERE titulo = 'rankingplacar'"
-		executa_query(sql, "update")
-"""
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("saves", prefixes=list("/.!")))
 def comando_saves(client, message):
 	try:
@@ -222,23 +210,23 @@ def comando_sql(client, message):
 	sql = message.text.replace(".sql ", "")
 	try:
 		if "select" in sql.lower():
-		 	resultados = executa_query(sql, "select")
-		 	lista = ""
-		 	for resultado in resultados:
-		 		lista += f"{resultado}\n"
-		 	if message.from_user.id == 886429586:
-		 		client.edit_message_text(message.chat.id, message.id, f"{lista}\n\n<code>{sql}</code>")
-		 	else:
-		 		message.reply(f"{lista}\n\n<code>{sql}</code>")
+			resultados = executa_query(sql, "select")
+			lista = ""
+			for resultado in resultados:
+				lista += f"{resultado}\n"
+			if message.from_user.id == 886429586:
+				client.edit_message_text(message.chat.id, message.id, f"{lista}\n\n<code>{sql}</code>")
+			else:
+				message.reply(f"{lista}\n\n<code>{sql}</code>")
 		else:
-		 	executa_query(sql, "delete")
-		 	if message.from_user.id == 886429586:
-		 		client.edit_message_text(message.chat.id, message.id, f"Comando executado com sucesso.\n\n<code>{sql}</code>")
-		 	else:
-		 		message.reply(f"Comando executado com sucesso.\n\n<code>{sql}</code>")
+			executa_query(sql, "delete")
+			if message.from_user.id == 886429586:
+				client.edit_message_text(message.chat.id, message.id, f"Comando executado com sucesso.\n\n<code>{sql}</code>")
+			else:
+				message.reply(f"Comando executado com sucesso.\n\n<code>{sql}</code>")
 		 		
 	except Exception as e:
-         trata_erro(e, sql)
+		trata_erro(e, sql)
 		
 @brinabot.on_message(filters.me & filters.command("call"))
 def call_jogo(client, message):
@@ -279,7 +267,7 @@ def sorteia_lobo(client, message):
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("ping"))
 def comando_ping(client, message):
 	client.send_message(message.chat.id, "Pong!\n<i>version: 15</i>")
-	
+
 @brinabot.on_message(filters.user(AUTORIZADOS) & filters.command("sqlite", prefixes=list(".!")))
 def comando_sqlite(client, message):
 	comando = message.text.replace(".sqlite ", "")
@@ -306,11 +294,10 @@ def comando_sqlite(client, message):
 		conn.close()
 	except Exception as e:
 		 client.edit_message_text(message.chat.id, message.id, e)
-						
+				
 @brinabot.on_message(filters.chat(LOBINDIE) & filters.regex("Esperamos que você se sinta confortável conosco") & filters.bot)
 def deleta_mcombot(client, message):
 	client.delete_messages(message.chat.id, message.id)
-
 
 def verifica_lobo_postado():
 	# obtém o nome do dia da semana correspondente ao número
@@ -404,6 +391,7 @@ def envia_lobo(client, message):
 			print(chute)
 			if chute:
 				palavra_secreta(message.from_user, chute, message.id, message.chat.id)
+
 
 
 @brinabot.on_message(filters.me & filters.command("reloadlobo"))

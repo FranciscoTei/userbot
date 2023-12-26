@@ -10,14 +10,14 @@ from difflib import SequenceMatcher
 
 
 def is_input_accepted(input_string, reference_string):
-    if len(input_string) < 10:
-    	max_similarity = 0.80
-    else:
-    	max_similarity = 0.85
-    similarity_ratio = SequenceMatcher(None, input_string.lower(), reference_string.lower()).ratio()
-    if similarity_ratio >= max_similarity:
-    	print(reference_string, similarity_ratio)
-    return similarity_ratio >= max_similarity
+	if len(input_string) < 10:
+		max_similarity = 0.80
+	else:
+		max_similarity = 0.85
+	similarity_ratio = SequenceMatcher(None, input_string.lower(), reference_string.lower()).ratio()
+	if similarity_ratio >= max_similarity:
+		print(reference_string, similarity_ratio)
+	return similarity_ratio >= max_similarity
     
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("addemoji"))
 def comando_addemoji(client, message):
@@ -82,7 +82,7 @@ def comando_salvaagenda(client, message):
 
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("filters"))
 def comando_formatafilters(client, message):
-	formata_calendario(True)
+	formata_calendario(message.chat.id, True)
 
 @brinabot.on_message(filters.chat([STAFF, TESTES]) & filters.command("horarios"))
 def comando_horarios(client, message):
@@ -132,8 +132,8 @@ def formata_dias():
 	dias_na_semana.append(proxima_segunda.strftime("%d/%m"))	
 	# Adicione os próximos dias à lista (por exemplo, os próximos 5 dias)
 	for i in range(1, 7):  # Este loop adicionará os próximos 5 dias
-	    proximo_dia = proxima_segunda + timedelta(days=i)
-	    dias_na_semana.append(proximo_dia.strftime("%d/%m"))
+		proximo_dia = proxima_segunda + timedelta(days=i)
+		dias_na_semana.append(proximo_dia.strftime("%d/%m"))
 	return dias_na_semana
 
 dias_na_semana = formata_dias()
@@ -182,8 +182,8 @@ def comando_removeagenda(client, message):
 			conn.close()
 			client.send_message(message.chat.id, f"Foram removidos {deleted_rows} jogos de {aplicador} da agenda.")
 		else:
-			 conn.close()
-			 client.send_message(message.chat.id, f"Não foram encontrados jogos agendados para {aplicador}.")
+			conn.close()
+			client.send_message(message.chat.id, f"Não foram encontrados jogos agendados para {aplicador}.")
 
 	
 def verifica_jogo_existente(cursor, game, semana, hora):
@@ -344,29 +344,14 @@ def formata_agenda(camps = False):
 	conn.close()
 	return agenda
 		
-	# Executar o comando SQL para criar a tabela
-#cursor.execute(sql)
-#formata_agenda()
 
-#print(cursor.execute("SELECT emoji FROM jogos WHERE jogo='‍Campeonato de Zumbi'").fetchone()[0])
-
-
-def formata_calendario(saves = False):
+def formata_calendario(grupo, saves = False):
 	conn = sqlite3.connect('agenda.db')
 
 # Criar um cursor para executar comandos SQL
 	cursor = conn.cursor()
 	agenda ="" # "<b>CALENDÁRIO SEMANAL</b> 🗓\n"
 	
-	dias_da_semana = [
-	    "SEGUNDA-FEIRA",
-	    "TERÇA-FEIRA",
-	    "QUARTA-FEIRA",
-	    "QUINTA-FEIRA",
-	    "SEXTA-FEIRA",
-	    "SÁBADO",
-	    "DOMINGO"
-	]
 	i = 0
 	for dia in dias_da_semana:
 		sql = f"SELECT * FROM agenda WHERE semana = '{dia}' ORDER BY hora"
@@ -389,7 +374,14 @@ def formata_calendario(saves = False):
 			agenda += f"{emoji} {jogo[2]} {jogo[4]}\n"
 		if saves:
 			diasave = dia[:-6] if len(dia) > 7 else dia
-			brinabot.send_message(TESTES,  "/personal " + diasave.lower() + "\n" + agenda)
+			
+			messageid = brinabot.send_message(define_grupo,  "/personal " + diasave.lower() + "\n" + agenda)
+				
+			if grupo == LOBINDIE:
+				brinabot.delete_messages(grupo, messageid.id)
+			if diasave in ("SÁBADO", "TERÇA"):
+				diasave = diasave.replace("Á", "A").replace("Ç", "C")
+				brinabot.send_message(grupo,  "/personal " + diasave.lower() + "\n" + agenda)	
 			agenda = ""
 	conn.close()
 	return agenda
@@ -397,7 +389,7 @@ def formata_calendario(saves = False):
 	# Executar o comando SQL para criar a tabela
 	cursor.execute(sql)
 	
-formata_calendario()
+formata_calendario(TESTES)
 
 def add_emoji(jogos):
 	conn = sqlite3.connect('agenda.db')

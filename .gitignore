@@ -1,7 +1,8 @@
+.vscode/
+__pycache__/
 brinabot.session
 bot.session
 erros.txt
 erros.log
-tests
-wordle-bot.session
+tests/
 logs.txt

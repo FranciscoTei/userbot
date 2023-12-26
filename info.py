@@ -30,7 +30,7 @@ def define_grupo():
 		STAFF = -1001217627450
 		TESTES = -1001974320965
 		
-	return LOBINDIE, STAFF, TESTES
+	return [LOBINDIE, STAFF, TESTES]
 		
 #Admins, Channels & Users
 LOGS= -1001865449571
@@ -47,11 +47,10 @@ else:
 
 AUTORIZADOS = [836445988, 934735022, 934923747, 886429586]
 LOBINDIEFIXO= -1001366864342
-LOBINDIE, _, _= define_grupo()#mudar
-_, _, TESTES = define_grupo()
+LOBINDIE= define_grupo()[0]
+TESTES = define_grupo()[2]
 INDIECANAL= -1001484956109
 INDIEMUSIC = "-1001302341410"
-_, STAFF, _= define_grupo() #mudar
+STAFF= define_grupo()[1]
 RANKING = -423539628
 IMAGENS = -1001984560446
-
