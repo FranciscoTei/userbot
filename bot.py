@@ -18,6 +18,7 @@ from info import *
 from agenda import *
 import demoji
 from dl_videos import *
+from loteria_caixa import MegaSena
 from rich.traceback import install
 install()
 
@@ -66,6 +67,29 @@ with app:
 		print(2/0)
 	except Exception:
 		logging.error("bot iniciado")
+
+@brinabot.on_message(filters.command("resultado"))
+def comando_megasen(client, message):
+	resultado = MegaSena().listaDezenas()
+	resultado_string = ' '.join(map(str, resultado))
+	print(resultado_string)
+	apostatupla = executa_query("SELECT apostador, aposta FROM megasena", "select")
+	apostas = {}
+	for apostador, aposta in apostatupla:
+	    apostas[apostador] = aposta
+	final = f"<b>Resultado LobIndie Sena</b>\n\n<code>{resultado_string}</code>\n\n"
+	for jogador, aposta in apostas.items():
+		#print(jogador, aposta)
+		final += f"<b>{jogador}:</b> "
+		acertos = 0
+		for dezena in resultado:
+			if dezena in aposta:
+				acertos += 1
+		if acertos == 1:
+			final += f"{acertos} acerto\n"
+		else:
+			final += f"{acertos} acertos\n"
+	client.send_message(message.chat.id, final)
 
 @brinabot.on_message(filters.chat(LOBINDIE) & filters.inline_keyboard & filters.user(1903115246))
 def save_commans(client, message):
